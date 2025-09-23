@@ -28,6 +28,7 @@ export const authenticateToken = (
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret') as any;
     req.user = decoded.user;
     next();
+    return;
   } catch (error) {
     return res.status(403).json({
       success: false,
@@ -53,5 +54,6 @@ export const authorizeRole = (roles: string[]) => {
     }
 
     next();
+    return ;
   };
 };

@@ -1,0 +1,42 @@
+{
+  "name": "rural-healthcare-platform",
+  "version": "1.0.0",
+  "description": "Healthcare platform for rural India",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend/api-gateway",
+    "backend/services/*",
+    "shared"
+  ],
+  "scripts": {
+    "dev": "pm2 start ecosystem.config.js",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:api-gateway": "cd backend/api-gateway && npm run dev",
+    "dev:auth": "cd backend/services/auth-service && npm run dev",
+    "dev:profile": "cd backend/services/profile-service && npm run dev",
+    "dev:chat": "cd backend/services/chat-service && npm run dev",
+    "dev:appointment": "cd backend/services/appointment-service && npm run dev",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "npm run build:api-gateway && npm run build:services",
+    "build:api-gateway": "cd backend/api-gateway && npm run build",
+    "build:services": "cd backend/services/auth-service && npm run build && cd ../profile-service && npm run build && cd ../chat-service && npm run build && cd ../appointment-service && npm run build",
+    "db:setup": "cd shared && npm run db:generate && npm run db:push && npm run db:seed",
+    "lint": "npm run lint:frontend && npm run lint:backend",
+    "lint:frontend": "cd frontend && npm run lint",
+    "lint:backend": "cd backend/api-gateway && npm run lint && cd ../services/auth-service && npm run lint",
+    "install:all": "./scripts/install-all.sh",
+    "clean": "npm run clean:deps && npm run clean:build",
+    "clean:deps": "rm -rf node_modules frontend/node_modules backend/*/node_modules backend/services/*/node_modules shared/node_modules",
+    "clean:build": "rm -rf frontend/dist backend/*/dist backend/services/*/dist"
+  },
+  "devDependencies": {
+    "pm2": "^5.3.0",
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}

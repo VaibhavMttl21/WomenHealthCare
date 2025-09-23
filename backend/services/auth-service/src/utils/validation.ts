@@ -6,9 +6,9 @@ export const registerSchema = z.object({
     .string()
     .min(8, 'Password must be at least 8 characters long')
     .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Password must contain at least one lowercase letter, one uppercase letter, and one number'),
-  role: z.enum(['patient', 'doctor'], {
+  role: z.enum(['PATIENT', 'DOCTOR'], {
     required_error: 'Role is required',
-    invalid_type_error: 'Role must be either patient or doctor',
+    invalid_type_error: 'Role must be either PATIENT or DOCTOR',
   }),
   firstName: z.string().min(2, 'First name must be at least 2 characters long'),
   lastName: z.string().min(2, 'Last name must be at least 2 characters long'),

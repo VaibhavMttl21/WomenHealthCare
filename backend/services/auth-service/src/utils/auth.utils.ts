@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
 export const generateToken = (payload: any): string => {
+  // @ts-ignore
   return jwt.sign(
     { user: payload },
     process.env.JWT_SECRET || 'fallback-secret',

@@ -76,7 +76,7 @@ router.post('/register', async (req: Request, res: Response, next: NextFunction)
         },
       });
     }
-    next(error);
+    return next(error);
   }
 });
 
@@ -85,22 +85,22 @@ router.post('/login', async (req: Request, res: Response, next: NextFunction) =>
   try {
     // Validate input
     const validatedData = loginSchema.parse(req.body);
-
+    
     // Find user
     const user = await prisma.user.findUnique({
       where: { email: validatedData.email },
     });
-
+    
     if (!user) {
       return res.status(401).json({
         success: false,
         error: { message: 'Invalid email or password' },
       });
     }
-
+    
     // Check password
     const isPasswordValid = await comparePassword(validatedData.password, user.password);
-
+    
     if (!isPasswordValid) {
       return res.status(401).json({
         success: false,
@@ -120,7 +120,7 @@ router.post('/login', async (req: Request, res: Response, next: NextFunction) =>
       where: { id: user.id },
       data: { lastLoginAt: new Date() },
     });
-
+    
     res.status(200).json({
       success: true,
       data: {
@@ -146,7 +146,8 @@ router.post('/login', async (req: Request, res: Response, next: NextFunction) =>
         },
       });
     }
-    next(error);
+    return next(error);
+    
   }
 });
 
@@ -171,7 +172,8 @@ router.post('/refresh', async (req: Request, res: Response, next: NextFunction) 
         },
       });
     }
-    next(error);
+    return next(error);
+    
   }
 });
 
