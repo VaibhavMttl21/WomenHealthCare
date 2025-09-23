@@ -1,0 +1,26 @@
+{
+  "name": "shared-db-schema",
+  "version": "1.0.0",
+  "description": "Shared database schema for Rural Healthcare Platform",
+  "main": "index.js",
+  "scripts": {
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio",
+    "db:seed": "ts-node prisma/seed.ts"
+  },
+  "keywords": ["prisma", "database", "healthcare"],
+  "author": "Rural Healthcare Team",
+  "license": "MIT",
+  "dependencies": {
+    "prisma": "^5.7.1",
+    "@prisma/client": "^5.7.1",
+    "@prisma/extension-accelerate": "^0.6.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "typescript": "^5.3.3",
+    "ts-node": "^10.9.2"
+  }
+}
