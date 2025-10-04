@@ -36,6 +36,40 @@
     "notifications": "Notifications",
     "settings": "Settings"
   },
+  "nav": {
+    "chatbot": "Chatbot",
+    "mealPlanner": "Meal Planner",
+    "broadcast": "Broadcast"
+  },
+  "menu": {
+    "title": "Menu",
+    "editProfile": "Edit Profile",
+    "emergencyContacts": "Emergency Contacts",
+    "privacy": "Privacy & Security",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "role": {
+    "women": "Women",
+    "family": "Family Member",
+    "doctor": "Doctor",
+    "asha": "ASHA Worker"
+  },
+  "bottomNav": {
+    "chatbot": "Chatbot",
+    "mealPlanner": "Meal Planner",
+    "broadcast": "Broadcast"
+  },
+  "footer": {
+    "tagline": "Empowering rural women with accessible healthcare solutions",
+    "quickLinks": "Quick Links",
+    "aboutUs": "About Us",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "help": "Help Center",
+    "contact": "Contact Us",
+    "copyright": "All rights reserved."
+  },
   "auth": {
     "login": "Login",
     "register": "Register",
@@ -68,6 +102,7 @@
     "welcomeBack": "Welcome back",
     "healthOverview": "Health Overview",
     "upcomingAppointments": "Upcoming Appointments",
+    "upcomingAppointment": "Upcoming Appointment",
     "recentChats": "Recent Conversations",
     "quickActions": "Quick Actions",
     "bookAppointment": "Book Appointment",

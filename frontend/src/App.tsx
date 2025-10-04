@@ -13,6 +13,9 @@ const DashboardPage = React.lazy(() => import('./pages/dashboard/DashboardPage')
 const ProfilePage = React.lazy(() => import('./pages/profile/ProfilePage'));
 const ChatPage = React.lazy(() => import('./pages/chat/ChatPage'));
 const AppointmentsPage = React.lazy(() => import('./pages/appointments/AppointmentsPage'));
+const MapPage = React.lazy(() => import('./pages/map/MapPage'));
+const MealPlannerPage = React.lazy(() => import('./pages/meal/MealPlannerPage'));
+const BroadcastPage = React.lazy(() => import('./pages/broadcast/BroadcastPage'));
 const NotFoundPage = React.lazy(() => import('./pages/NotFoundPage'));
 
 // Protected Route Component
@@ -109,6 +112,30 @@ function App() {
               element={
                 <ProtectedRoute>
                   <AppointmentsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/map"
+              element={
+                <ProtectedRoute>
+                  <MapPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/meal-planner"
+              element={
+                <ProtectedRoute>
+                  <MealPlannerPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/broadcast"
+              element={
+                <ProtectedRoute>
+                  <BroadcastPage />
                 </ProtectedRoute>
               }
             />

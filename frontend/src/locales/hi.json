@@ -36,6 +36,40 @@
     "notifications": "सूचनाएं",
     "settings": "सेटिंग्स"
   },
+  "nav": {
+    "chatbot": "चैटबॉट",
+    "mealPlanner": "भोजन योजनाकार",
+    "broadcast": "प्रसारण"
+  },
+  "menu": {
+    "title": "मेनू",
+    "editProfile": "प्रोफाइल संपादित करें",
+    "emergencyContacts": "आपातकालीन संपर्क",
+    "privacy": "गोपनीयता और सुरक्षा",
+    "settings": "सेटिंग्स",
+    "logout": "लॉगआउट"
+  },
+  "role": {
+    "women": "महिला",
+    "family": "परिवार का सदस्य",
+    "doctor": "डॉक्टर",
+    "asha": "आशा कार्यकर्ता"
+  },
+  "bottomNav": {
+    "chatbot": "चैटबॉट",
+    "mealPlanner": "भोजन योजना",
+    "broadcast": "प्रसारण"
+  },
+  "footer": {
+    "tagline": "ग्रामीण महिलाओं को सुलभ स्वास्थ्य समाधान प्रदान करना",
+    "quickLinks": "त्वरित लिंक",
+    "aboutUs": "हमारे बारे में",
+    "privacy": "गोपनीयता नीति",
+    "terms": "सेवा की शर्तें",
+    "help": "सहायता केंद्र",
+    "contact": "संपर्क करें",
+    "copyright": "सर्वाधिकार सुरक्षित।"
+  },
   "auth": {
     "login": "लॉगिन",
     "register": "पंजीकरण",
@@ -68,6 +102,7 @@
     "welcomeBack": "वापस स्वागत है",
     "healthOverview": "स्वास्थ्य अवलोकन",
     "upcomingAppointments": "आगामी अपॉइंटमेंट",
+    "upcomingAppointment": "आगामी अपॉइंटमेंट",
     "recentChats": "हाल की बातचीत",
     "quickActions": "त्वरित कार्य",
     "bookAppointment": "अपॉइंटमेंट बुक करें",
