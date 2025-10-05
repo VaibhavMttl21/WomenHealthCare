@@ -290,3 +290,5 @@ const RegisterPage: React.FC = () => {
 };
 
 export default RegisterPage;
+
+// Note: This component is being replaced by OnboardingPage.tsx for a better multi-step registration flow

@@ -41,13 +41,24 @@ export const registerUser = createAsyncThunk(
     lastName: string;
     phoneNumber: string;
     role: 'patient' | 'doctor';
+    profile?: any;
   }, { rejectWithValue }) => {
     try {
-      const response = await authService.register(userData);
+      // Convert role to uppercase for backend
+      const backendData = {
+        ...userData,
+        role: userData.role.toUpperCase() as 'PATIENT' | 'DOCTOR',
+      };
+      
+      // Use complete registration endpoint if profile data is provided
+      const response = userData.profile 
+        ? await authService.registerComplete(backendData as any)
+        : await authService.register(backendData as any);
+        
       localStorage.setItem('token', response.data.data.token);
       return response.data.data;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.error?.message || 'Registration failed');
+      return rejectWithValue(error.response?.data?.error?.message || 'Registration failed. Please try again.');
     }
   }
 );

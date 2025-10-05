@@ -48,9 +48,21 @@ export const authService = {
     firstName: string;
     lastName: string;
     phoneNumber: string;
-    role: 'patient' | 'doctor';
+    role: 'patient' | 'doctor' | 'PATIENT' | 'DOCTOR';
   }): Promise<AxiosResponse<AuthResponse>> {
     return api.post('/auth/register', userData);
+  },
+
+  async registerComplete(data: {
+    email: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+    role: 'patient' | 'doctor' | 'PATIENT' | 'DOCTOR';
+    profile?: any;
+  }): Promise<AxiosResponse<AuthResponse>> {
+    return api.post('/auth/register/complete', data);
   },
 
   async logout(): Promise<AxiosResponse<ApiResponse>> {

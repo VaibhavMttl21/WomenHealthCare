@@ -18,7 +18,18 @@ router.post('/register', async (req, res, next) => {
     }
   }
 });
-
+router.post('/register/complete', async (req, res, next) => {
+  try {
+    const response = await axios.post(`${AUTH_SERVICE_URL}/register/complete`, req.body);
+    res.status(response.status).json(response.data);
+  } catch (error: any) {
+    if (error.response) {
+      res.status(error.response.status).json(error.response.data);
+    } else {
+      next(error);
+    }
+  }
+});
 router.post('/login', async (req, res, next) => {
   try {
     console.log('Forwarding login request to auth service');

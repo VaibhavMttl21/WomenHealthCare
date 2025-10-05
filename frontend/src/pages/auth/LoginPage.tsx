@@ -163,7 +163,7 @@ const LoginPage: React.FC = () => {
               <p className="text-sm text-gray-600">
                 {t('auth.dontHaveAccount')}{' '}
                 <Link
-                  to="/register"
+                  to="/onboarding"
                   className="font-medium text-pink-600 hover:text-pink-500"
                 >
                   {t('auth.createAccount')}

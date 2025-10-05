@@ -9,6 +9,7 @@ import { ErrorBoundary } from './components/ui/ErrorBoundary';
 // Lazy load pages for better performance
 const LoginPage = React.lazy(() => import('./pages/auth/LoginPage'));
 const RegisterPage = React.lazy(() => import('./pages/auth/RegisterPage'));
+const OnboardingPage = React.lazy(() => import('./pages/auth/OnboardingPage'));
 const DashboardPage = React.lazy(() => import('./pages/dashboard/DashboardPage'));
 const ProfilePage = React.lazy(() => import('./pages/profile/ProfilePage'));
 const ChatPage = React.lazy(() => import('./pages/chat/ChatPage'));
@@ -78,6 +79,14 @@ function App() {
               element={
                 <PublicRoute>
                   <RegisterPage />
+                </PublicRoute>
+              }
+            />
+            <Route
+              path="/onboarding"
+              element={
+                <PublicRoute>
+                  <OnboardingPage />
                 </PublicRoute>
               }
             />
