@@ -18,12 +18,22 @@ import {
   AlertCircle,
   ChevronRight
 } from '../../components/ui/Icons';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/store/store';
+import { logout } from '@/store/slices/authSlice';
 
 const WomenDashboard: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAppSelector((state) => state.auth);
   const [profileCompletion] = useState(65);
+  const dispatch = useDispatch<AppDispatch>()
+
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate('/login');
+  };
 
   // Mock data - Replace with actual API calls
   const upcomingAppointment = {
@@ -61,6 +71,14 @@ const WomenDashboard: React.FC = () => {
 
   return (
     <MainLayout userRole="women">
+       <Button
+                  onClick={handleLogout}
+                  variant="outline"
+                  className="flex items-center gap-2"
+                >
+                  <User className="h-5 w-5" />
+                </Button>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
         
         {/* Welcome Section */}

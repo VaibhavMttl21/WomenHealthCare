@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../store/store';
+import { RootState, AppDispatch } from '../store/store';
 import { logout } from '../store/slices/authSlice';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
@@ -12,15 +12,15 @@ import { Calendar, MessageCircle, User, FileText, Clock, Heart } from '../compon
 const DashboardPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const { user, isLoading } = useSelector((state: RootState) => state.auth);
 
   if (isLoading) {
     return <LoadingSpinner />;
   }
 
-  const handleLogout = async () => {
-    await dispatch(logout());
+  const handleLogout = () => {
+    dispatch(logout());
     navigate('/login');
   };
 
@@ -78,7 +78,7 @@ const DashboardPage: React.FC = () => {
             variant="outline"
             className="flex items-center gap-2"
           >
-            {t('common.logout')}
+            <User className="h-5 w-5" />
           </Button>
         </div>
 
