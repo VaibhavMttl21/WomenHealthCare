@@ -17,6 +17,14 @@ module.exports = {
       }
     },
     {
+      name: 'chatbot-service',
+      script: 'npm run dev',
+      cwd: './backend/services/chatbot-service',
+      env: {
+        NODE_ENV: 'development'
+      }
+    },
+    {
       name: 'frontend',
       script: 'npm run dev',
       cwd: './frontend',
