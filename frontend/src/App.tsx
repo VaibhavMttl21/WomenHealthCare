@@ -3,6 +3,8 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { useAppSelector } from './hooks/useAppSelector';
+import { useNotifications } from './hooks/useNotifications';
+import { useAuthRestore } from './hooks/useAuthRestore';
 import { LoadingSpinner } from './components/ui/LoadingSpinner';
 import { ErrorBoundary } from './components/ui/ErrorBoundary';
 
@@ -17,6 +19,9 @@ const AppointmentsPage = React.lazy(() => import('./pages/appointments/Appointme
 const MapPage = React.lazy(() => import('./pages/map/MapPage'));
 const MealPlannerPage = React.lazy(() => import('./pages/meal/MealPlannerPage'));
 const BroadcastPage = React.lazy(() => import('./pages/broadcast/BroadcastPage'));
+const NotificationsPage = React.lazy(() => import('./pages/notifications/NotificationsPage'));
+const SendNotificationsPage = React.lazy(() => import('./pages/notifications/SendNotificationsPage'));
+const DebugAuthPage = React.lazy(() => import('./pages/DebugAuthPage'));
 const NotFoundPage = React.lazy(() => import('./pages/NotFoundPage'));
 
 // Protected Route Component
@@ -53,12 +58,23 @@ const PageLoader: React.FC = () => (
 
 function App() {
   const { i18n } = useTranslation();
+  
+  // Restore auth state from localStorage on app load
+  const { isRestoring } = useAuthRestore();
+  
+  // Initialize notifications when user is authenticated
+  useNotifications();
 
   // Set the HTML lang attribute based on current language
   React.useEffect(() => {
     document.documentElement.lang = i18n.language;
     document.documentElement.dir = i18n.language === 'ar' ? 'rtl' : 'ltr';
   }, [i18n.language]);
+
+  // Show loading screen while restoring auth
+  if (isRestoring) {
+    return <PageLoader />;
+  }
 
   return (
     <ErrorBoundary>
@@ -145,6 +161,32 @@ function App() {
               element={
                 <ProtectedRoute>
                   <BroadcastPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/notifications"
+              element={
+                <ProtectedRoute>
+                  <NotificationsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/notifications/send"
+              element={
+                <ProtectedRoute> 
+                  <SendNotificationsPage />
+                 </ProtectedRoute>
+              }
+            />
+
+            {/* Debug Route (for development only) */}
+            <Route
+              path="/debug-auth"
+              element={
+                <ProtectedRoute>
+                  <DebugAuthPage />
                 </ProtectedRoute>
               }
             />

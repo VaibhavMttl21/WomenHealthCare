@@ -223,11 +223,29 @@ model Notification {
   message     String
   type        String   // "appointment", "medication", "checkup", "general"
   isRead      Boolean  @default(false)
+  isSent      Boolean  @default(false)
   scheduledFor DateTime?
+  sentAt      DateTime?
   metadata    String?  // JSON string for additional data
   createdAt   DateTime @default(now())
 
   @@map("notifications")
+}
+
+// FCM Device Tokens
+model DeviceToken {
+  id          String   @id @default(cuid())
+  userId      String
+  token       String   @unique
+  deviceType  String   // "web", "android", "ios"
+  deviceName  String?
+  isActive    Boolean  @default(true)
+  lastUsedAt  DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@map("device_tokens")
 }
 
 // System Configuration

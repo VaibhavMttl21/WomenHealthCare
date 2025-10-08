@@ -4,12 +4,14 @@ import { setupListeners } from '@reduxjs/toolkit/query';
 import authReducer from './slices/authSlice';
 import profileReducer from './slices/profileSlice';
 import uiReducer from './slices/uiSlice';
+import notificationReducer from './slices/notificationSlice';
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     profile: profileReducer,
     ui: uiReducer,
+    notification: notificationReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
