@@ -49,6 +49,7 @@ module.exports = {
       },
       fontFamily: {
         sans: ['Poppins', 'Nunito', 'system-ui', 'sans-serif'],
+        serif: ['Lora', 'Georgia', 'serif'],
         hindi: ['Noto Sans Devanagari', 'sans-serif'],
       },
       boxShadow: {

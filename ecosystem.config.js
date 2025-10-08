@@ -1,9 +1,11 @@
+const path = require('path');
+
 module.exports = {
   apps: [
     {
       name: 'api-gateway',
       script: 'npm run dev',
-      cwd: './backend/api-gateway',
+      cwd: path.resolve(__dirname, 'backend/api-gateway'),
       env: {
         NODE_ENV: 'development'
       }
@@ -11,7 +13,7 @@ module.exports = {
     {
       name: 'auth-service',
       script: 'npm run dev',
-      cwd: './backend/services/auth-service',
+      cwd: path.resolve(__dirname, 'backend/services/auth-service'),
       env: {
         NODE_ENV: 'development'
       }
@@ -19,7 +21,7 @@ module.exports = {
     {
       name: 'frontend',
       script: 'npm run dev',
-      cwd: './frontend',
+      cwd: path.resolve(__dirname, 'frontend'),
       env: {
         NODE_ENV: 'development'
       }

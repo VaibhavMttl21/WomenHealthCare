@@ -8,13 +8,15 @@ interface SidebarProps {
   onClose: () => void;
   userName?: string;
   userRole?: 'women' | 'family' | 'doctor' | 'asha';
+  onLogout?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ 
   isOpen, 
   onClose, 
   userName = 'User',
-  userRole = 'women' 
+  userRole = 'women',
+  onLogout
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -53,8 +55,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
   };
 
   const handleLogout = () => {
-    // Implement logout logic
-    navigate('/login');
+    if (onLogout) {
+      onLogout();
+    } else {
+      // Fallback logout logic
+      navigate('/login');
+    }
     onClose();
   };
 

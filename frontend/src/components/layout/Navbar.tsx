@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Menu, Bell, Globe, MessageCircle, Calendar, MapPin } from '../ui/Icons';
+import { Menu, Bell, Globe, MessageCircle, Calendar, MapPin, LogOut } from '../ui/Icons';
 
 interface NavbarProps {
   onMenuClick: () => void;
   userRole?: 'women' | 'family' | 'doctor' | 'asha';
+  onLogout?: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onMenuClick, userRole = 'women' }) => {
+export const Navbar: React.FC<NavbarProps> = ({ onMenuClick, userRole = 'women', onLogout }) => {
   const { t, i18n } = useTranslation();
   const [showLangMenu, setShowLangMenu] = useState(false);
   const [notifications] = useState(3);
@@ -28,25 +29,25 @@ export const Navbar: React.FC<NavbarProps> = ({ onMenuClick, userRole = 'women' 
   return (
     <>
       {/* Mobile Navbar */}
-      <nav className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-primary-maroon to-primary-pink shadow-lg safe-top">
+      <nav className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white shadow-lg safe-top">
         <div className="flex items-center justify-between px-4 py-3">
           {/* Hamburger Menu */}
           <button
             onClick={onMenuClick}
-            className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
             aria-label="Open menu"
           >
-            <Menu className="h-6 w-6 text-white" />
+            <Menu className="h-6 w-6 text-gray-700" />
           </button>
 
           {/* Language Selector */}
           <div className="relative">
             <button
               onClick={() => setShowLangMenu(!showLangMenu)}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
             >
-              <Globe className="h-5 w-5 text-white" />
-              <span className="text-white font-medium text-sm">{currentLang.native}</span>
+              <Globe className="h-5 w-5 text-gray-700" />
+              <span className="text-gray-700 font-medium text-sm">{currentLang.native}</span>
             </button>
 
             {/* Language Dropdown */}
@@ -69,10 +70,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onMenuClick, userRole = 'women' 
           </div>
 
           {/* Notifications */}
-          <button className="relative p-2 rounded-lg hover:bg-white/10 transition-colors">
-            <Bell className="h-6 w-6 text-white" />
+          <button className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors">
+            <Bell className="h-6 w-6 text-gray-700" />
             {notifications > 0 && (
-              <span className="absolute -top-1 -right-1 bg-secondary-400 text-neutral-charcoal text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
                 {notifications}
               </span>
             )}
@@ -93,11 +94,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onMenuClick, userRole = 'women' 
                 <Menu className="h-6 w-6 text-neutral-charcoal" />
               </button>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-primary-pink to-primary-maroon rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#d81d5b]">
                   <span className="text-white font-bold text-xl">W</span>
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold text-gradient">Women SelfCare</h1>
+                  <h1 className="text-xl font-bold text-[#d81d5b]">Women SelfCare</h1>
                   <p className="text-xs text-gray-500">
                     {userRole === 'women' && 'Your Health Companion'}
                     {userRole === 'family' && 'Family Health Hub'}
@@ -112,16 +113,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onMenuClick, userRole = 'women' 
             <div className="flex items-center gap-6">
               {/* Quick Actions for Desktop */}
               <div className="flex items-center gap-4">
-                <button className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors">
-                  <MessageCircle className="h-5 w-5 text-primary-maroon" />
+                <button className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-amber-50 transition-colors">
+                  <MessageCircle className="h-5 w-5 text-pink-500" />
                   <span className="text-sm font-medium text-neutral-charcoal">{t('nav.chatbot')}</span>
                 </button>
-                <button className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors">
-                  <Calendar className="h-5 w-5 text-primary-maroon" />
+                <button className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-pink-50 transition-colors">
+                  <Calendar className="h-5 w-5 text-amber-600" />
                   <span className="text-sm font-medium text-neutral-charcoal">{t('nav.mealPlanner')}</span>
                 </button>
-                <button className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors">
-                  <MapPin className="h-5 w-5 text-primary-maroon" />
+                <button className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-blue-50 transition-colors">
+                  <MapPin className="h-5 w-5 text-blue-600" />
                   <span className="text-sm font-medium text-neutral-charcoal">{t('nav.broadcast')}</span>
                 </button>
               </div>
@@ -163,6 +164,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onMenuClick, userRole = 'women' 
                   </span>
                 )}
               </button>
+
+              {/* Logout Button - Desktop Only */}
+              {onLogout && (
+                <button
+                  onClick={onLogout}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-red-200 hover:border-red-300 hover:bg-red-50 text-red-600 transition-colors"
+                  title="Logout"
+                >
+                  <LogOut className="h-5 w-5" />
+                  <span className="text-sm font-medium">Logout</span>
+                </button>
+              )}
             </div>
           </div>
         </div>
