@@ -4,14 +4,18 @@ import { authenticateToken, AuthRequest } from '../middleware/auth';
 
 const router = Router();
 
-const CHAT_SERVICE_URL = process.env.CHAT_SERVICE_URL || 'http://localhost:3003';
+const CHATBOT_SERVICE_URL = process.env.CHATBOT_SERVICE_URL || 'http://localhost:3003';
 
 // All chat routes require authentication
 router.use(authenticateToken);
 
+// Send message to chatbot
 router.post('/message', async (req: AuthRequest, res, next) => {
   try {
-    const response = await axios.post(`${CHAT_SERVICE_URL}/message`, req.body, {
+    const response = await axios.post(`${CHATBOT_SERVICE_URL}/message`, {
+      ...req.body,
+      userId: req.user?.id,
+    }, {
       headers: {
         Authorization: req.headers.authorization,
         'User-ID': req.user?.id,
@@ -27,9 +31,11 @@ router.post('/message', async (req: AuthRequest, res, next) => {
   }
 });
 
-router.get('/history', async (req: AuthRequest, res, next) => {
+// Get chat history for a session
+router.get('/history/:sessionId', async (req: AuthRequest, res, next) => {
   try {
-    const response = await axios.get(`${CHAT_SERVICE_URL}/history`, {
+    const { sessionId } = req.params;
+    const response = await axios.get(`${CHATBOT_SERVICE_URL}/history/${sessionId}`, {
       headers: {
         Authorization: req.headers.authorization,
         'User-ID': req.user?.id,
@@ -45,9 +51,30 @@ router.get('/history', async (req: AuthRequest, res, next) => {
   }
 });
 
-router.delete('/history', async (req: AuthRequest, res, next) => {
+// Delete chat history for a session
+router.delete('/history/:sessionId', async (req: AuthRequest, res, next) => {
   try {
-    const response = await axios.delete(`${CHAT_SERVICE_URL}/history`, {
+    const { sessionId } = req.params;
+    const response = await axios.delete(`${CHATBOT_SERVICE_URL}/history/${sessionId}`, {
+      headers: {
+        Authorization: req.headers.authorization,
+        'User-ID': req.user?.id,
+      },
+    });
+    res.status(response.status).json(response.data);
+  } catch (error: any) {
+    if (error.response) {
+      res.status(error.response.status).json(error.response.data);
+    } else {
+      next(error);
+    }
+  }
+});
+
+// Get all chat sessions for user
+router.get('/sessions', async (req: AuthRequest, res, next) => {
+  try {
+    const response = await axios.get(`${CHATBOT_SERVICE_URL}/sessions`, {
       headers: {
         Authorization: req.headers.authorization,
         'User-ID': req.user?.id,
