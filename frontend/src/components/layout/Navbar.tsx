@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Menu, Bell, Globe, MessageCircle, Calendar, MapPin } from '../ui/Icons';
+import { Menu, Globe, MessageCircle, Calendar, MapPin } from '../ui/Icons';
+import NotificationPanel from '../notifications/NotificationPanel';
 
 interface NavbarProps {
   onMenuClick: () => void;
@@ -10,7 +11,6 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ onMenuClick, userRole = 'women' }) => {
   const { t, i18n } = useTranslation();
   const [showLangMenu, setShowLangMenu] = useState(false);
-  const [notifications] = useState(3);
 
   const languages = [
     { code: 'en', name: 'English', native: 'English' },
@@ -69,14 +69,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onMenuClick, userRole = 'women' 
           </div>
 
           {/* Notifications */}
-          <button className="relative p-2 rounded-lg hover:bg-white/10 transition-colors">
-            <Bell className="h-6 w-6 text-white" />
-            {notifications > 0 && (
-              <span className="absolute -top-1 -right-1 bg-secondary-400 text-neutral-charcoal text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                {notifications}
-              </span>
-            )}
-          </button>
+          <NotificationPanel isMobile={true} />
         </div>
       </nav>
 
@@ -87,6 +80,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onMenuClick, userRole = 'women' 
             {/* Logo & Title */}
             <div className="flex items-center gap-3">
               <button
+                title='Open menu'
                 onClick={onMenuClick}
                 className="p-2 rounded-lg hover:bg-gray-100 transition-colors lg:hidden"
               >
@@ -155,14 +149,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onMenuClick, userRole = 'women' 
               </div>
 
               {/* Notifications */}
-              <button className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors">
-                <Bell className="h-6 w-6 text-neutral-charcoal" />
-                {notifications > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-primary-pink text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                    {notifications}
-                  </span>
-                )}
-              </button>
+              <NotificationPanel isMobile={false} />
             </div>
           </div>
         </div>
