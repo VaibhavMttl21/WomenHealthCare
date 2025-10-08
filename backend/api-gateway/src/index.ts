@@ -10,6 +10,7 @@ import authRoutes from './routes/auth.routes';
 import profileRoutes from './routes/profile.routes';
 import chatRoutes from './routes/chat.routes';
 import appointmentRoutes from './routes/appointment.routes';
+import notificationRoutes from './routes/notifications.route';
 import { errorHandler } from './middleware/errorHandler';
 import { notFound } from './middleware/notFound';
 
@@ -28,7 +29,7 @@ app.use(cors({
 // Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  max: 100000, // limit each IP to 100 requests per windowMs
   message: 'Too many requests from this IP, please try again later.',
 });
 app.use(limiter);
@@ -55,7 +56,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/appointments', appointmentRoutes);
-
+app.use('/api/notifications',notificationRoutes);
 // Error handling middleware
 app.use(notFound);
 app.use(errorHandler);

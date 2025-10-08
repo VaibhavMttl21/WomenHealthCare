@@ -30,8 +30,20 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       // Token expired or invalid
-      localStorage.removeItem('token');
-      window.location.href = '/login';
+      const currentPath = window.location.pathname;
+      
+      // Only redirect if not already on login page and not on public routes
+      if (currentPath !== '/login' && currentPath !== '/register' && currentPath !== '/onboarding') {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        
+        // Use a small delay to prevent multiple redirects
+        setTimeout(() => {
+          if (window.location.pathname !== '/login') {
+            window.location.href = '/login';
+          }
+        }, 100);
+      }
     }
     return Promise.reject(error);
   }

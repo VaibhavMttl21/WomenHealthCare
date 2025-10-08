@@ -59,14 +59,30 @@ const initialState: AuthState = {
   error: null,
 };
 
+// Helper function to normalize user role from backend (DOCTOR/PATIENT) to frontend (doctor/patient)
+const normalizeUserRole = (user: any): User => {
+  return {
+    ...user,
+    role: user.role?.toLowerCase() as 'patient' | 'doctor',
+  };
+};
+
 // Async thunks
 export const loginUser = createAsyncThunk(
   'auth/login',
   async (credentials: { email: string; password: string }, { rejectWithValue }) => {
     try {
       const response = await authService.login(credentials);
-      localStorage.setItem('token', response.data.data.token);
-      return response.data.data;
+      const { token, user } = response.data.data;
+      
+      // Normalize user role from backend format (DOCTOR) to frontend format (doctor)
+      const normalizedUser = normalizeUserRole(user);
+      
+      // Persist both token and normalized user data
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(normalizedUser));
+      
+      return { token, user: normalizedUser };
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.error?.message || 'Login failed');
     }
@@ -95,9 +111,17 @@ export const registerUser = createAsyncThunk(
       const response = userData.profile 
         ? await authService.registerComplete(backendData as any)
         : await authService.register(backendData as any);
+      
+      const { token, user } = response.data.data;
+      
+      // Normalize user role from backend format (DOCTOR) to frontend format (doctor)
+      const normalizedUser = normalizeUserRole(user);
+      
+      // Persist both token and normalized user data
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(normalizedUser));
         
-      localStorage.setItem('token', response.data.data.token);
-      return response.data.data;
+      return { token, user: normalizedUser };
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.error?.message || 'Registration failed. Please try again.');
     }
@@ -110,10 +134,12 @@ export const logoutUser = createAsyncThunk(
     try {
       await authService.logout();
       localStorage.removeItem('token');
+      localStorage.removeItem('user');
       return null;
     } catch (error: any) {
       // Even if logout API fails, we should clear local storage
       localStorage.removeItem('token');
+      localStorage.removeItem('user');
       return null;
     }
   }
@@ -127,7 +153,9 @@ const authSlice = createSlice({
       state.error = null;
     },
     setCredentials: (state, action: PayloadAction<{ user: User; token: string }>) => {
-      state.user = action.payload.user;
+      // Normalize user role in case it comes from localStorage with uppercase
+      const normalizedUser = normalizeUserRole(action.payload.user);
+      state.user = normalizedUser;
       state.token = action.payload.token;
       state.isAuthenticated = true;
       state.error = null;

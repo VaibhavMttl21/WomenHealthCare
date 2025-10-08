@@ -31,6 +31,14 @@ module.exports = {
       env: {
         NODE_ENV: 'development'
       }
+    },
+    {
+      name: 'notification-service',
+      script: 'npm run dev',
+      cwd: './backend/services/notification-service',
+      env: {
+        NODE_ENV: 'development'
+      }
     }
   ]
 };
