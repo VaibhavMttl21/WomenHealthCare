@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { motion } from 'framer-motion';
 import { RootState } from '../../store/store';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { registerUser } from '../../store/slices/authSlice';
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/Card';
 import { Heart } from '../../components/ui/Icons';
 import { StepIndicator } from '../../components/auth/StepIndicator';
 import { saveFormData, getFormData, clearFormData, OnboardingFormData } from '../../utils/storageUtils';
@@ -186,57 +186,115 @@ const OnboardingPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 py-6 px-4 sm:py-12">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-6 sm:mb-8">
-          <div className="flex items-center justify-center mb-4">
-            <Heart className="h-8 w-8 text-pink-500 mr-2" />
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Rural Health Care</h1>
-          </div>
-          <p className="text-gray-600 text-sm sm:text-base">
-            Complete your profile to get personalized healthcare support
-          </p>
-        </div>
-
-        {/* Step Indicator */}
-        <div className="mb-6 sm:mb-8">
-          <StepIndicator steps={steps} currentStep={currentStep} />
-        </div>
-
-        {/* Form Card */}
-        <Card className="shadow-xl border-0">
-          <CardHeader className="pb-4 sm:pb-6">
-            <CardTitle className="text-xl sm:text-2xl text-center text-gray-800">
-              {steps[currentStep - 1]}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="px-4 sm:px-6 pb-6">
-            {renderStep()}
-          </CardContent>
-        </Card>
-
-        {/* Login Link */}
-        <div className="mt-6 text-center">
-          <p className="text-sm text-gray-600">
-            Already have an account?{' '}
-            <Link
-              to="/login"
-              className="font-medium text-pink-600 hover:text-pink-500"
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
+      {/* Main Content */}
+      <div className="relative z-10 min-h-screen flex">
+        {/* Centered Onboarding Form */}
+        <div className="w-full flex items-center justify-center p-4 sm:p-6 md:p-8">
+          <div className="w-full max-w-3xl">
+            {/* Header */}
+            <motion.div 
+              className="text-center mb-6 sm:mb-8"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
             >
-              Sign In
-            </Link>
-          </p>
-        </div>
+              <div className="flex items-center justify-center mb-4">
+                <motion.div 
+                  className="w-16 h-16 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center shadow-lg"
+                  animate={{ 
+                    scale: [1, 1.15, 1],
+                  }}
+                  transition={{ 
+                    duration: 1.5,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                >
+                  <Heart className="h-8 w-8 text-white fill-white" />
+                </motion.div>
+              </div>
+              <h1 
+                className="text-3xl sm:text-4xl md:text-5xl font-light mb-3 text-gray-800"
+                style={{ fontFamily: 'Playfair Display, serif' }}
+              >
+                Create Your Account
+              </h1>
+              <p 
+                className="text-gray-600 text-sm sm:text-base md:text-lg font-light italic"
+                style={{ fontFamily: 'Nunito, sans-serif' }}
+              >
+                Your wellness journey starts here
+              </p>
+            </motion.div>
 
-        {/* Support Info */}
-        <div className="mt-8 text-center">
-          <p className="text-xs text-gray-500">
-            Need help? Call: +91-XXXX-XXXX-XX
-          </p>
-          <p className="text-xs text-gray-500 mt-1">
-            Available in हिंदी | தமிழ் | English
-          </p>
+            {/* Step Indicator */}
+            <motion.div 
+              className="mb-6 sm:mb-8"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <StepIndicator steps={steps} currentStep={currentStep} />
+            </motion.div>
+
+            {/* Form Card with Enhanced Gradient */}
+            <motion.div
+              className="relative overflow-hidden rounded-3xl p-6 sm:p-8 shadow-2xl bg-white/80 backdrop-blur-sm"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              {/* Decorative gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-pink-100/40 via-purple-100/40 to-blue-100/40 opacity-60"></div>
+              
+              <div className="relative z-10">
+                <h2 
+                  className="text-xl sm:text-2xl font-semibold text-gray-800 mb-6 text-center"
+                  style={{ fontFamily: 'Poppins, sans-serif' }}
+                >
+                  {steps[currentStep - 1]}
+                </h2>
+                
+                <div className="min-h-[300px]">
+                  {renderStep()}
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Login Link */}
+            <motion.div 
+              className="mt-6 text-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+            >
+              <p className="text-sm text-gray-700 font-medium" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                Already have an account?{' '}
+                <Link
+                  to="/login"
+                  className="font-semibold text-pink-600 hover:text-pink-700 transition-all duration-200"
+                >
+                  Sign In
+                </Link>
+              </p>
+            </motion.div>
+
+            {/* Support Info */}
+            <motion.div 
+              className="mt-6 text-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.7 }}
+            >
+              <p className="text-xs text-gray-600" style={{ fontFamily: 'Nunito, sans-serif' }}>
+                Need help? Call: <span className="font-semibold text-pink-600">+91-XXXX-XXXX-XX</span>
+              </p>
+              <p className="text-xs text-gray-500 mt-1">
+                Available in <span className="font-medium">हिंदी | தமிழ் | English</span>
+              </p>
+            </motion.div>
+          </div>
         </div>
       </div>
     </div>
