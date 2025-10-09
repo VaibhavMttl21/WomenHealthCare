@@ -88,7 +88,8 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
             </Button>
             <Button 
               onClick={onGetDirections}
-              className="flex-1 bg-white/80 backdrop-blur-sm border-2 border-pink-200/60 hover:border-[#ed7a78] hover:bg-pink-50/50 text-[#c54b4a] font-semibold py-2.5 sm:py-3 px-4 sm:px-5 rounded-xl shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 text-sm"
+              className="flex-1 bg-white/80 backdrop-blur-sm border-2 border-pink-200/60 hover:border-[#ed7a78] hover:bg-pink-50/50 font-semibold py-2.5 sm:py-3 px-4 sm:px-5 rounded-xl shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 text-sm"
+              style={{ color: '#c54b4a' }}
             >
               <span className="flex items-center justify-center gap-2">
                 <MapPin className="h-4 w-4" />

@@ -26,11 +26,11 @@ export const WelcomeSection: React.FC<WelcomeSectionProps> = ({ userName = 'Priy
           
           {/* Mobile Circular Image - Positioned above text */}
           <div className="sm:hidden mb-3">
-            <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-amber-100/40 shadow-md">
+            <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-amber-100/40 shadow-md">
               <img 
-                src="/src/images/welcomeimg.webp" 
+                src="/src/assets/welcomeimg.webp" 
                 alt="Welcome illustration" 
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover scale-110"
               />
             </div>
           </div>

@@ -56,7 +56,7 @@ export const MealPlanner: React.FC = () => {
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-      viewport={{ once: true }}
+      viewport={{ once: true, amount: 0.2 }}
     >
       {/* Section Header */}
       <div className="flex flex-col items-center justify-center mb-8 sm:mb-10">
@@ -87,14 +87,14 @@ export const MealPlanner: React.FC = () => {
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
-        viewport={{ once: true }}
+        viewport={{ once: true, amount: 0.3 }}
         whileHover={{
           y: -6,
           boxShadow: '0 20px 40px rgba(107, 142, 35, 0.15)',
           transition: { duration: 0.3 }
         }}
       >
-        <div className="flex flex-col lg:flex-row gap-8 items-center">
+        <div className="flex flex-col-reverse lg:flex-row gap-8 items-center">
           {/* Left Content Section */}
           <div className="flex-1 w-full">
             {/* Card Header */}
@@ -270,7 +270,7 @@ export const MealPlanner: React.FC = () => {
             initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.5 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.3 }}
           >
             {/* Decorative background circles */}
             <div className="absolute top-10 right-10 w-64 h-64 rounded-full opacity-10"
