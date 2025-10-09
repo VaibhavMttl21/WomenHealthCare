@@ -130,7 +130,12 @@ class NotificationService {
       };
 
       const response = await api.post(`/notifications/tokens/register`, request);
-      console.log('Device token registered:', response.data);
+      console.log('✅ Device token registered successfully:', {
+        userId,
+        tokenPreview: token.substring(0, 20) + '...',
+        deviceType: 'web',
+        deviceName
+      });
       return response.data.success;
     } catch (error) {
       console.error('Error registering device token:', error);
@@ -167,7 +172,10 @@ class NotificationService {
     }
 
     onMessage(messaging, (payload) => {
-      console.log('Foreground message received:', payload);
+      console.log('📨 [FOREGROUND] Message received:', payload);
+      console.log('📨 [FOREGROUND] Title:', payload.notification?.title);
+      console.log('📨 [FOREGROUND] Body:', payload.notification?.body);
+      console.log('📨 [FOREGROUND] Data:', payload.data);
 
       // Show toast notification
       const notification = payload.notification;
@@ -183,6 +191,7 @@ class NotificationService {
 
       // Call custom callback if provided
       if (callback) {
+        console.log('📨 [FOREGROUND] Calling callback with payload');
         callback(payload as FCMPayload);
       }
     });

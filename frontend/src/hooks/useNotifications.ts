@@ -43,7 +43,10 @@ export const useNotifications = () => {
         }
 
         // Setup message listener (always setup regardless of permission)
+        console.log('🎧 Setting up foreground message listener...');
         notificationService.setupMessageListener((payload) => {
+          console.log('🔔 [useNotifications] Received notification payload:', payload);
+              
           // Add notification to Redux store when received in foreground
           if (payload.notification) {
             const notification = {
@@ -57,11 +60,12 @@ export const useNotifications = () => {
               metadata: payload.data ? JSON.stringify(payload.data) : null,
               createdAt: new Date().toISOString(),
             };
+            console.log('💾 Adding notification to Redux store:', notification);
             dispatch(addNotification(notification));
           }
         });
 
-        console.log('✅ Notifications initialized');
+        console.log('✅ Notifications initialized successfully');
       } catch (error) {
         console.error('❌ Error initializing notifications:', error);
       }
