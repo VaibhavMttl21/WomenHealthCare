@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { Menu, Globe, MessageCircle, Calendar, MapPin, LogOut } from '../ui/Icons';
 import NotificationPanel from '../notifications/NotificationPanel';
 
@@ -11,6 +12,7 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ onMenuClick, userRole = 'women', onLogout }) => {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const [showLangMenu, setShowLangMenu] = useState(false);
 
   const languages = [
@@ -30,18 +32,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onMenuClick, userRole = 'women',
     <>
       {/* Mobile Navbar */}
       <nav className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white shadow-lg safe-top">
-        <div className="flex items-center justify-between px-4 py-3">
+        <div className="flex items-center justify-between px-4 py-3 gap-2">
           {/* Hamburger Menu */}
           <button
             onClick={onMenuClick}
-            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            className="p-2 rounded-lg hover:bg-gray-100 transition-colors flex-shrink-0"
             aria-label="Open menu"
           >
             <Menu className="h-6 w-6 text-gray-700" />
           </button>
 
-          {/* Language Selector */}
-          <div className="relative">
+          {/* Language Selector - Center */}
+          <div className="relative flex-1 flex justify-center">
             <button
               onClick={() => setShowLangMenu(!showLangMenu)}
               className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
@@ -52,7 +54,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onMenuClick, userRole = 'women',
 
             {/* Language Dropdown */}
             {showLangMenu && (
-              <div className="absolute top-full mt-2 right-0 bg-white rounded-xl shadow-lg overflow-hidden min-w-[150px] animate-fadeIn">
+              <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-white rounded-xl shadow-lg overflow-hidden min-w-[150px] animate-fadeIn z-50">
                 {languages.map((lang) => (
                   <button
                     key={lang.code}
@@ -69,8 +71,22 @@ export const Navbar: React.FC<NavbarProps> = ({ onMenuClick, userRole = 'women',
             )}
           </div>
 
-          {/* Notifications */}
-          <NotificationPanel isMobile={true} />
+          {/* Right side group - Notifications & Logout */}
+          <div className="flex items-center gap-1 flex-shrink-0">
+            {/* Notifications */}
+            <NotificationPanel isMobile={true} />
+
+            {/* Logout Button - Mobile */}
+            {onLogout && (
+              <button
+                onClick={onLogout}
+                className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                title="Logout"
+              >
+                <LogOut className="h-6 w-6 text-gray-700" />
+              </button>
+            )}
+          </div>
         </div>
       </nav>
 
@@ -88,11 +104,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onMenuClick, userRole = 'women',
                 <Menu className="h-6 w-6 text-neutral-charcoal" />
               </button>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#d81d5b]">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#c54b4a]">
                   <span className="text-white font-bold text-xl">W</span>
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold text-[#d81d5b]">Women SelfCare</h1>
+                  <h1 className="text-xl font-bold text-[#c54b4a]">Women SelfCare</h1>
                   <p className="text-xs text-gray-500">
                     {userRole === 'women' && 'Your Health Companion'}
                     {userRole === 'family' && 'Family Health Hub'}
@@ -107,15 +123,21 @@ export const Navbar: React.FC<NavbarProps> = ({ onMenuClick, userRole = 'women',
             <div className="flex items-center gap-6">
               {/* Quick Actions for Desktop */}
               <div className="flex items-center gap-4">
-                <button className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-amber-50 transition-colors">
-                  <MessageCircle className="h-5 w-5 text-pink-500" />
+                <button 
+                  onClick={() => navigate('/chat')}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-amber-50 transition-colors">
+                  <MessageCircle className="h-5 w-5 text-[#c54b4a]" />
                   <span className="text-sm font-medium text-neutral-charcoal">{t('nav.chatbot')}</span>
                 </button>
-                <button className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-pink-50 transition-colors">
+                <button 
+                  onClick={() => navigate('/meal-planner')}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-pink-50 transition-colors">
                   <Calendar className="h-5 w-5 text-amber-600" />
                   <span className="text-sm font-medium text-neutral-charcoal">{t('nav.mealPlanner')}</span>
                 </button>
-                <button className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-blue-50 transition-colors">
+                <button 
+                  onClick={() => navigate('/broadcast')}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-blue-50 transition-colors">
                   <MapPin className="h-5 w-5 text-blue-600" />
                   <span className="text-sm font-medium text-neutral-charcoal">{t('nav.broadcast')}</span>
                 </button>
@@ -151,6 +173,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onMenuClick, userRole = 'women',
 
               {/* Notifications */}
               <NotificationPanel isMobile={false} />
+
+              {/* Logout Button - Desktop */}
+              {onLogout && (
+                <button
+                  onClick={onLogout}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-gray-200 hover:border-red-300 hover:bg-red-50 text-red-600 transition-colors"
+                  title="Logout"
+                >
+                  <LogOut className="h-5 w-5" />
+                  <span className="text-sm font-medium">Logout</span>
+                </button>
+              )}
             </div>
           </div>
         </div>

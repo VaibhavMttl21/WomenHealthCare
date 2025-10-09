@@ -132,16 +132,16 @@ const NotificationPanel = ({ isMobile = false }: NotificationPanelProps) => {
         onClick={() => setIsOpen(!isOpen)}
         className={`relative p-2 rounded-lg transition-colors ${
           isMobile 
-            ? 'hover:bg-white/10' 
+            ? 'hover:bg-gray-100' 
             : 'hover:bg-gray-100'
         }`}
         aria-label="Notifications"
       >
-        <BellIcon className={`h-6 w-6 ${isMobile ? 'text-white' : 'text-neutral-charcoal'}`} />
+        <BellIcon className={`h-6 w-6 ${isMobile ? 'text-gray-700' : 'text-neutral-charcoal'}`} />
         {unreadCount > 0 && (
           <span className={`absolute -top-1 -right-1 text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center ${
             isMobile 
-              ? 'bg-secondary-400 text-neutral-charcoal' 
+              ? 'bg-pink-500 text-white' 
               : 'bg-primary-pink text-white'
           }`}>
             {unreadCount > 99 ? '99+' : unreadCount}

@@ -81,7 +81,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
         }`}
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-primary-maroon to-primary-pink p-6">
+        <div 
+          className="p-6"
+          style={{
+            background: 'linear-gradient(135deg, #be1a4f 0%, #dc1c5d 50%, #c54b4a 100%)'
+          }}
+        >
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-white font-bold text-xl">{t('menu.title')}</h2>
             <button

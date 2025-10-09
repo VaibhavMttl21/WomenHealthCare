@@ -43,7 +43,7 @@ export const WelcomeSection: React.FC<WelcomeSectionProps> = ({ userName = 'Priy
 
           {/* Refined Date with Elegant Styling */}
           <p className="font-light italic mb-2 sm:mb-3 md:mb-4 leading-relaxed tracking-wide text-xs sm:text-sm md:text-base lg:text-lg"
-             style={{ color: '#c54b4a', opacity: 0.8 }}>
+             style={{ color: '#000000', opacity: 0.8 }}>
             {currentDate}
           </p>
 
@@ -69,7 +69,7 @@ export const WelcomeSection: React.FC<WelcomeSectionProps> = ({ userName = 'Priy
         <div className="hidden sm:block sm:w-2/5 relative">
           <div className="absolute inset-0 rounded-r-2xl sm:rounded-r-3xl md:rounded-r-[2rem] overflow-hidden">
             <img 
-              src="/src/images/welcomeimg.webp" 
+              src="/src/assets/welcomeimg.webp" 
               alt="Welcome illustration" 
               className="w-full h-full object-cover shadow-inner"
             />
