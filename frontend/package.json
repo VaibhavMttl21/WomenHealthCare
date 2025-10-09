@@ -52,5 +52,9 @@
     "typescript": "^5.2.2",
     "vite": "^5.0.8",
     "vite-plugin-pwa": "^0.17.4"
+  },
+  "optionalDependencies": {
+    "@esbuild/linux-x64": "^0.25.10",
+    "@rollup/rollup-linux-x64-gnu": "^4.52.4"
   }
 }
