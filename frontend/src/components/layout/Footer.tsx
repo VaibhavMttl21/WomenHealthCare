@@ -7,7 +7,12 @@ export const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="hidden lg:block bg-gradient-to-r from-primary-maroon to-primary-pink text-white mt-12">
+    <footer 
+      className="hidden lg:block text-white mt-12"
+      style={{
+        background: 'linear-gradient(135deg, #be1a4f 0%, #dc1c5d 50%, #c54b4a 100%)'
+      }}
+    >
       <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* About Section */}
