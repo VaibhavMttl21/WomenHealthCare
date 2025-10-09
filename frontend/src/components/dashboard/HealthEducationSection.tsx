@@ -54,7 +54,7 @@ export const HealthEducationSection: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col items-center justify-center mb-8 sm:mb-10">
         <h2 
-            className="text-2xl sm:text-3xl md:text-4xl font-light text-center leading-tight"
+            className="text-3xl sm:text-4xl md:text-5xl mb-4 font-light text-center leading-tight"
             style={{ fontFamily: 'Playfair Display, Lora, serif' }}
           >
             <span 
@@ -91,7 +91,8 @@ export const HealthEducationSection: React.FC = () => {
             onClick={() => handleLearnMore(card.id)}
           >
             <motion.div
-              className="relative bg-white rounded-3xl shadow-lg overflow-hidden h-full flex flex-col border border-gray-200"
+              className="relative bg-white rounded-3xl shadow-lg overflow-hidden h-full flex flex-col"
+              style={{ border: '1px solid rgba(212, 175, 55, 0.4)' }}
               whileHover={{
                 y: -8,
                 boxShadow: '0 20px 40px rgba(168, 85, 247, 0.2)',

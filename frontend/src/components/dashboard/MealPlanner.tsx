@@ -64,10 +64,7 @@ export const MealPlanner: React.FC = () => {
           className="text-3xl sm:text-4xl md:text-5xl font-light tracking-wide mb-3"
           style={{ 
             fontFamily: 'Playfair Display, serif',
-            backgroundImage: 'linear-gradient(135deg, #be1a4f 0%, #dc1c5d 50%, #c54b4a 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text'
+            color: '#4a5d23'
           }}
         >
           AI Meal Planner
