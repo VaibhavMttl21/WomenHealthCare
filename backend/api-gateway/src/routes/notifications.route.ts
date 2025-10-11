@@ -207,4 +207,25 @@ router.delete('/:notificationId', async (req: AuthRequest, res, next) => {
   }
 });
 
+// Development test endpoint
+if (process.env.NODE_ENV === 'development') {
+  router.post('/test', async (req: AuthRequest, res, next) => {
+    try {
+      const response = await axios.post(`${NOTIFICATION_SERVICE_URL}/test`, req.body, {
+        headers: {
+          Authorization: req.headers.authorization,
+          'User-ID': req.user?.id,
+        },
+      });
+      res.status(response.status).json(response.data);
+    } catch (error: any) {
+      if (error.response) {
+        res.status(error.response.status).json(error.response.data);
+      } else {
+        next(error);
+      }
+    }
+  });
+}
+
 export default router;
