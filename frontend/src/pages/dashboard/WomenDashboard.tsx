@@ -59,7 +59,7 @@ const WomenDashboard: React.FC = () => {
         {/* Profile Completion Card */}
         <ProfileCompletionCard 
           completionPercentage={profileCompletion}
-          onCompleteProfile={() => navigate('/profile')}
+          onCompleteProfile={() => navigate('/profile/complete')}
         />
 
         {/* Health Education Section */}

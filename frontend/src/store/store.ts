@@ -5,6 +5,7 @@ import authReducer from './slices/authSlice';
 import profileReducer from './slices/profileSlice';
 import uiReducer from './slices/uiSlice';
 import notificationReducer from './slices/notificationSlice';
+import broadcastReducer from './slices/broadcastSlice';
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     profile: profileReducer,
     ui: uiReducer,
     notification: notificationReducer,
+    broadcast: broadcastReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
