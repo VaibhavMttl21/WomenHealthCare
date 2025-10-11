@@ -14,6 +14,7 @@ const RegisterPage = React.lazy(() => import('./pages/auth/RegisterPage'));
 const OnboardingPage = React.lazy(() => import('./pages/auth/OnboardingPage'));
 const DashboardPage = React.lazy(() => import('./pages/dashboard/DashboardPage'));
 const ProfilePage = React.lazy(() => import('./pages/profile/ProfilePage'));
+const CompleteProfilePage = React.lazy(() => import('./pages/profile/CompleteProfilePage'));
 const ChatPage = React.lazy(() => import('./pages/chat/ChatPage'));
 const AppointmentsPage = React.lazy(() => import('./pages/appointments/AppointmentsPage'));
 const MapPage = React.lazy(() => import('./pages/map/MapPage'));
@@ -121,6 +122,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <ProfilePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile/complete"
+              element={
+                <ProtectedRoute>
+                  <CompleteProfilePage />
                 </ProtectedRoute>
               }
             />
