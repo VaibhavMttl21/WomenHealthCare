@@ -19,9 +19,16 @@ export const useNotifications = () => {
       try {
         // Check if notification permission is already granted
         if (!('Notification' in window)) {
-          console.warn('This browser does not support notifications');
+          console.warn('⚠️ This browser does not support notifications');
           return;
         }
+
+        if (!('serviceWorker' in navigator)) {
+          console.warn('⚠️ This browser does not support service workers');
+          return;
+        }
+
+        console.log('🔧 Initializing notifications for user:', user.id);
 
         // Only request permission if not already granted
         const permission = Notification.permission;
@@ -29,17 +36,26 @@ export const useNotifications = () => {
         if (permission === 'granted') {
           // Permission already granted, register device token
           console.log('✅ Notification permission already granted');
-          await notificationService.registerDeviceToken(user.id);
+          const success = await notificationService.registerDeviceToken(user.id);
+          if (!success) {
+            console.warn('⚠️ Failed to register device token despite having permission');
+          }
         } else if (permission === 'default') {
           // Permission not asked yet, request it
           console.log('📱 Requesting notification permission...');
           const granted = await notificationService.requestPermission();
           if (granted) {
-            await notificationService.registerDeviceToken(user.id);
+            const success = await notificationService.registerDeviceToken(user.id);
+            if (!success) {
+              console.warn('⚠️ Failed to register device token after permission granted');
+            }
+          } else {
+            console.warn('⚠️ Notification permission denied by user');
           }
         } else {
           // Permission denied
-          console.warn('⚠️ Notification permission denied');
+          console.warn('⚠️ Notification permission was previously denied');
+          console.warn('💡 User can enable notifications in browser settings');
         }
 
         // Setup message listener (always setup regardless of permission)
@@ -65,9 +81,16 @@ export const useNotifications = () => {
           }
         });
 
-        console.log('✅ Notifications initialized successfully');
+        console.log('✅ Notifications initialized successfully for user:', user.id);
       } catch (error) {
         console.error('❌ Error initializing notifications:', error);
+        if (error instanceof Error) {
+          console.error('❌ Error details:', error.message);
+        }
+        // Show user-friendly error in development
+        if (import.meta.env.DEV) {
+          console.error('💡 Check browser console for detailed error information');
+        }
       }
     };
 
