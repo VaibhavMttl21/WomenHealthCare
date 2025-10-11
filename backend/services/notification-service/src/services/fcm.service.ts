@@ -111,6 +111,7 @@ class FCMService {
           failedTokens.push(token!);
           
           console.error('❌ Failed to send to token:', token?.substring(0, 20) + '...');
+          console.error('❌ Full error object:', JSON.stringify(resp.error, null, 2));
           console.error('❌ Error code:', resp.error?.code);
           console.error('❌ Error message:', resp.error?.message);
           
