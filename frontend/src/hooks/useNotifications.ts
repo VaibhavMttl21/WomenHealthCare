@@ -82,7 +82,7 @@ export const useNotifications = () => {
           }
         });
 
-        console.log('✅ Notifications initialized successfully');
+        console.log('✅ Notifications initialized successfully for user:', user.id);
       } catch (error) {
         console.error('❌ Error initializing notifications:', error);
         if (error instanceof Error) {
