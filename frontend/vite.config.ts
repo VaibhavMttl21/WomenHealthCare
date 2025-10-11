@@ -34,7 +34,9 @@ export default defineConfig({
         ]
       },
       workbox: {
+        // Exclude Firebase messaging service worker from PWA cache
         globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+        globIgnores: ['firebase-messaging-sw.js'],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/api\./,
@@ -47,8 +49,14 @@ export default defineConfig({
               }
             }
           }
-        ]
-      }
+        ],
+        // Don't register PWA service worker automatically to avoid conflicts
+        skipWaiting: false,
+        clientsClaim: false,
+      },
+      // Disable automatic service worker registration to avoid conflicts with Firebase
+      disable: false,
+      selfDestroying: false,
     })
   ],
   resolve: {

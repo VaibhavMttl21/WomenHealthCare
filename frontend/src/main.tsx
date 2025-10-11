@@ -11,6 +11,18 @@ import { store } from './store/store'
 import './locales/i18n'
 import './index.css'
 
+// Register Firebase service worker early
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker
+    .register('/firebase-messaging-sw.js')
+    .then((registration) => {
+      console.log('✅ Firebase Service Worker registered successfully:', registration);
+    })
+    .catch((error) => {
+      console.error('❌ Firebase Service Worker registration failed:', error);
+    });
+}
+
 // Create a client for React Query
 const queryClient = new QueryClient({
   defaultOptions: {

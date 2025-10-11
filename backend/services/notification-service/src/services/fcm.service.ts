@@ -54,6 +54,22 @@ class FCMService {
       return { successCount: 0, failureCount: 0, failedTokens: [] };
     }
 
+    console.log('🔍 Checking token validity in database...');
+    // Check if tokens are still active in database using imported prisma instance
+    
+    for (const token of tokens) {
+      const dbToken = await prisma.deviceToken.findUnique({
+        where: { token },
+      });
+      if (!dbToken) {
+        console.warn('⚠️ Token not found in database:', token.substring(0, 20) + '...');
+      } else if (!dbToken.isActive) {
+        console.warn('⚠️ Token is marked as inactive in database:', token.substring(0, 20) + '...');
+      } else {
+        console.log('✅ Token is active in database:', token.substring(0, 20) + '...');
+      }
+    }
+
     try {
       console.log('🔍 Messaging object exists:', !!messaging);
       console.log('🔍 sendEachForMulticast method exists:', typeof messaging.sendEachForMulticast);
@@ -95,6 +111,7 @@ class FCMService {
           failedTokens.push(token!);
           
           console.error('❌ Failed to send to token:', token?.substring(0, 20) + '...');
+          console.error('❌ Full error object:', JSON.stringify(resp.error, null, 2));
           console.error('❌ Error code:', resp.error?.code);
           console.error('❌ Error message:', resp.error?.message);
           
