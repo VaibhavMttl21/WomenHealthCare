@@ -76,11 +76,62 @@ model User {
 model UserProfile {
   id                String          @id @default(cuid())
   userId            String          @unique
+  
+  // Personal Information
   age               Int?
   dateOfBirth       DateTime?
+  heightCm          Float?
+  weightKg          Float?
+  bloodGroup        String?
+  bmi               Float?
+  maritalStatus     String?
+  childrenCount     Int?
+  occupation        String?
+  dietaryPreference String?         // "Vegetarian", "Non-Vegetarian", "Vegan"
+  exerciseHabits    String?         // "Daily", "Often", "Occasionally", "Never"
+  sleepHours        Float?
+  smoking           Boolean         @default(false)
+  alcohol           Boolean         @default(false)
+  
+  // Pregnancy/Reproductive Information
   pregnancyStage    PregnancyStage? @default(NOT_PREGNANT)
-  dueDate           DateTime?
   lastPeriodDate    DateTime?
+  averageCycleLength Int?           @default(28)
+  pastPregnancies   Int?            @default(0)
+  miscarriages      Int?            @default(0)
+  pregnancyType     String?         // "Natural", "IVF", "IUI"
+  dueDate           DateTime?
+  expectedDueDate   DateTime?
+  doctorName        String?
+  hospital          String?
+  bloodPressure     String?
+  sugarLevel        String?
+  trimester         Int?
+  complications     String?         // JSON array of complications
+  
+  // Health Preferences
+  preferredLanguage String          @default("en")
+  notificationTime  String?         // "08:00", "09:00", etc.
+  stressLevel       String?         // "Low", "Medium", "High"
+  sleepQuality      String?         // "Poor", "Fair", "Good", "Excellent"
+  waterIntakeLiters Float?
+  supportPreferences String?        // JSON array of preferences
+  
+  // Nutrition Information
+  dietaryRestrictions String?       // JSON array of restrictions
+  favoriteFoods     String?         // JSON array of foods
+  deficiencies      String?         // JSON array of deficiencies
+  supplements       String?         // JSON array of supplements
+  
+  // Family Support
+  spouseName        String?
+  spousePhone       String?
+  spouseBloodGroup  String?
+  familyHistory     String?         // JSON array of family medical history
+  primaryCaregiverContact String?
+  dependentsCount   Int?
+  
+  // Legacy/Additional fields
   emergencyContact  String?
   emergencyPhone    String?
   address           String?
@@ -91,12 +142,13 @@ model UserProfile {
   medicalHistory    String?         // JSON string for medical conditions
   allergies         String?         // JSON string for allergies
   currentMedications String?        // JSON string for current medications
-  preferredLanguage String          @default("en")
   hasSmartphone     Boolean         @default(false)
   internetAccess    String?         // "good", "poor", "none"
   educationLevel    String?         // "none", "primary", "secondary", "higher"
-  occupation        String?
   familyIncome      String?         // "below_poverty", "low", "middle", "high"
+  
+  profileCompleted  Boolean         @default(false)
+  completionPercentage Int          @default(0)
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
 
