@@ -2,8 +2,7 @@
 cd backend/services/auth-service
 npx prisma migrate dev
 cd ../notification-service
-npx prisma generate client
-
+npx prisma migrate  dev
 #Run chatbot service migration
 cd ../chatbot-service
 npx prisma generate client

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { messaging, getToken, onMessage } from '../config/firebase.config';
+import { messaging, getToken, onMessage, VAPID_KEY } from '../config/firebase.config';
 import toast from 'react-hot-toast';
 import type {
   NotificationFilter,
@@ -10,7 +10,7 @@ import type {
 } from '../types/notification';
 
 // Use API Gateway URL instead of direct service URL
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
 // Create axios instance with auth interceptor
 const api = axios.create({
@@ -46,8 +46,11 @@ api.interceptors.response.use(
   }
 );
 
-// VAPID key from Firebase Console > Project Settings > Cloud Messaging
-const VAPID_KEY = import.meta.env.VITE_FIREBASE_VAPID_KEY || 'vapid-key';
+// Validate VAPID key
+if (!VAPID_KEY || VAPID_KEY === 'vapid-key') {
+  console.error('❌ VAPID key not configured. Push notifications will not work.');
+  console.error('❌ Please set VITE_FIREBASE_VAPID_KEY in your .env file');
+}
 
 class NotificationService {
   private currentToken: string | null = null;
@@ -71,11 +74,19 @@ class NotificationService {
   }
 
   /**
-   * Get FCM token for the current device
+   * Get FCM token from Firebase with retry logic
    */
-  async getFCMToken(): Promise<string | null> {
+  async getFCMToken(retryCount = 0): Promise<string | null> {
+    const maxRetries = 3;
+    const retryDelay = 1000; // 1 second
+
     if (!messaging) {
-      console.warn('Firebase messaging not initialized');
+      console.warn('❌ Firebase messaging not available');
+      return null;
+    }
+
+    if (!VAPID_KEY || VAPID_KEY === 'vapid-key') {
+      console.error('❌ VAPID key not configured. Cannot get FCM token.');
       return null;
     }
 
@@ -83,13 +94,26 @@ class NotificationService {
       // Request permission first
       const hasPermission = await this.requestPermission();
       if (!hasPermission) {
-        console.warn('Notification permission denied');
+        console.warn('⚠️ Notification permission denied');
         return null;
       }
 
-      // Register service worker
-      const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
-      console.log('Service Worker registered:', registration);
+      // Get existing service worker registration
+      let registration = await navigator.serviceWorker.getRegistration('/firebase-messaging-sw.js');
+      
+      // If not found, try to register it
+      if (!registration) {
+        console.log('🔄 Registering Firebase service worker...');
+        try {
+          registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+          console.log('✅ Service Worker registered:', registration);
+        } catch (swError) {
+          console.error('❌ Failed to register service worker:', swError);
+          throw new Error('Service worker registration failed');
+        }
+      } else {
+        console.log('✅ Service Worker already registered:', registration);
+      }
 
       // Get FCM token
       const token = await getToken(messaging, {
@@ -99,15 +123,22 @@ class NotificationService {
 
       if (token) {
         this.currentToken = token;
-        console.log('FCM Token obtained:', token.substring(0, 20) + '...');
+        console.log('✅ FCM Token obtained:', token.substring(0, 20) + '...');
         return token;
       } else {
-        console.warn('No FCM token available');
-        return null;
+        throw new Error('No FCM token returned from Firebase');
       }
     } catch (error) {
-      console.error('Error getting FCM token:', error);
-      return null;
+      console.error(`❌ Error getting FCM token (attempt ${retryCount + 1}/${maxRetries + 1}):`, error);
+      
+      if (retryCount < maxRetries) {
+        console.log(`🔄 Retrying in ${retryDelay}ms...`);
+        await new Promise(resolve => setTimeout(resolve, retryDelay));
+        return this.getFCMToken(retryCount + 1);
+      } else {
+        console.error('❌ Max retries reached. FCM token generation failed.');
+        return null;
+      }
     }
   }
 
@@ -130,7 +161,12 @@ class NotificationService {
       };
 
       const response = await api.post(`/notifications/tokens/register`, request);
-      console.log('Device token registered:', response.data);
+      console.log('✅ Device token registered successfully:', {
+        userId,
+        tokenPreview: token.substring(0, 20) + '...',
+        deviceType: 'web',
+        deviceName
+      });
       return response.data.success;
     } catch (error) {
       console.error('Error registering device token:', error);
@@ -162,12 +198,17 @@ class NotificationService {
    */
   setupMessageListener(callback?: (payload: FCMPayload) => void): void {
     if (!messaging) {
-      console.warn('Firebase messaging not initialized');
+      console.warn('❌ Firebase messaging not initialized');
       return;
     }
 
+    console.log('🎧 [notificationService] Setting up onMessage listener...');
+    
     onMessage(messaging, (payload) => {
-      console.log('Foreground message received:', payload);
+      console.log('📨 [FOREGROUND] Message received:', payload);
+      console.log('📨 [FOREGROUND] Title:', payload.notification?.title);
+      console.log('📨 [FOREGROUND] Body:', payload.notification?.body);
+      console.log('📨 [FOREGROUND] Data:', payload.data);
 
       // Show toast notification
       const notification = payload.notification;
@@ -183,9 +224,14 @@ class NotificationService {
 
       // Call custom callback if provided
       if (callback) {
+        console.log('📨 [FOREGROUND] Calling callback with payload');
         callback(payload as FCMPayload);
+      } else {
+        console.log('📨 [FOREGROUND] No callback provided');
       }
     });
+    
+    console.log('✅ [notificationService] onMessage listener set up successfully');
   }
 
   /**

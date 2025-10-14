@@ -8,21 +8,27 @@ class FCMService {
    */
   async sendToToken(token: string, payload: NotificationPayload): Promise<boolean> {
     if (!messaging) {
-      console.warn('Firebase messaging not initialized. Cannot send notification.');
+      console.error('❌ Firebase messaging not initialized. Cannot send notification.');
+      console.error('❌ Check FIREBASE_PROJECT_ID, FIREBASE_PRIVATE_KEY, and FIREBASE_CLIENT_EMAIL in .env');
       return false;
     }
 
     try {
       const message = this.buildFCMMessage(token, payload);
+      console.log('📤 Attempting to send FCM message to token:', token.substring(0, 20) + '...');
       const response = await messaging.send(message);
-      console.log('✅ Successfully sent notification:', response);
+      console.log('✅ Successfully sent notification. Message ID:', response);
       return true;
     } catch (error: any) {
-      console.error('❌ Error sending notification to token:', error);
+      console.error('❌ Error sending notification to token:', token.substring(0, 20) + '...');
+      console.error('❌ Error code:', error.code);
+      console.error('❌ Error message:', error.message);
+      console.error('❌ Full error:', JSON.stringify(error, null, 2));
       
       // Handle invalid tokens
       if (error.code === 'messaging/invalid-registration-token' || 
           error.code === 'messaging/registration-token-not-registered') {
+        console.warn('⚠️ Marking token as inactive due to:', error.code);
         await this.markTokenAsInactive(token);
       }
       
@@ -39,7 +45,8 @@ class FCMService {
     failedTokens: string[];
   }> {
     if (!messaging) {
-      console.warn('Firebase messaging not initialized. Cannot send notifications.');
+      console.error('❌ Firebase messaging not initialized. Cannot send notifications.');
+      console.error('❌ Messaging object:', messaging);
       return { successCount: 0, failureCount: tokens.length, failedTokens: tokens };
     }
 
@@ -47,7 +54,26 @@ class FCMService {
       return { successCount: 0, failureCount: 0, failedTokens: [] };
     }
 
+    console.log('🔍 Checking token validity in database...');
+    // Check if tokens are still active in database using imported prisma instance
+    
+    for (const token of tokens) {
+      const dbToken = await prisma.deviceToken.findUnique({
+        where: { token },
+      });
+      if (!dbToken) {
+        console.warn('⚠️ Token not found in database:', token.substring(0, 20) + '...');
+      } else if (!dbToken.isActive) {
+        console.warn('⚠️ Token is marked as inactive in database:', token.substring(0, 20) + '...');
+      } else {
+        console.log('✅ Token is active in database:', token.substring(0, 20) + '...');
+      }
+    }
+
     try {
+      console.log('🔍 Messaging object exists:', !!messaging);
+      console.log('🔍 sendEachForMulticast method exists:', typeof messaging.sendEachForMulticast);
+      
       const message = {
         notification: {
           title: payload.title,
@@ -58,8 +84,8 @@ class FCMService {
         tokens: tokens,
         webpush: {
           notification: {
-            icon: '/notification-icon.png',
-            badge: '/badge-icon.png',
+            icon: '/vite.svg',
+            badge: '/vite.svg',
             requireInteraction: payload.type === 'emergency',
           },
           fcmOptions: {
@@ -68,8 +94,14 @@ class FCMService {
         },
       };
 
+      console.log('📤 Sending message:', JSON.stringify(message, null, 2));
+      
+      if (!messaging.sendEachForMulticast) {
+        throw new Error('sendEachForMulticast method not available on messaging object');
+      }
+      
       const response = await messaging.sendEachForMulticast(message);
-      console.log(`✅ Sent ${response.successCount} notifications, ${response.failureCount} failed`);
+      console.log(`📊 FCM Send Result: ✅ ${response.successCount} succeeded, ❌ ${response.failureCount} failed`);
 
       // Mark failed tokens as inactive
       const failedTokens: string[] = [];
@@ -78,10 +110,18 @@ class FCMService {
           const token = tokens[idx];
           failedTokens.push(token!);
           
+          console.error('❌ Failed to send to token:', token?.substring(0, 20) + '...');
+          console.error('❌ Full error object:', JSON.stringify(resp.error, null, 2));
+          console.error('❌ Error code:', resp.error?.code);
+          console.error('❌ Error message:', resp.error?.message);
+          
           if (resp.error?.code === 'messaging/invalid-registration-token' || 
               resp.error?.code === 'messaging/registration-token-not-registered') {
+            console.warn('⚠️ Marking token as inactive:', token?.substring(0, 20) + '...');
             this.markTokenAsInactive(token!);
           }
+        } else {
+          console.log('✅ Successfully sent to token:', tokens[idx]?.substring(0, 20) + '...');
         }
       });
 
