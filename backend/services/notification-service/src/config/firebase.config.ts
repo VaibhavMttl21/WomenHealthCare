@@ -33,14 +33,13 @@ const initializeFirebase = () => {
       return admin.app();
     }
 
-    // Validate configuration first
-    if (!validateFirebaseConfig()) {
+    // Parse private key - remove quotes and replace escaped newlines
+    let privateKey = process.env.FIREBASE_PRIVATE_KEY;
+    if (!privateKey) {
+      console.error('❌ FIREBASE_PRIVATE_KEY not found in environment');
       return null;
     }
 
-    // Parse private key - remove quotes and replace escaped newlines
-    let privateKey = process.env.FIREBASE_PRIVATE_KEY!;
-    
     // Remove surrounding quotes if present
     privateKey = privateKey.trim();
     if ((privateKey.startsWith('"') && privateKey.endsWith('"')) || 
@@ -51,11 +50,17 @@ const initializeFirebase = () => {
     // Replace escaped newlines with actual newlines
     privateKey = privateKey.replace(/\\n/g, '\n');
 
-    // Validate private key format
-    if (!privateKey.startsWith('-----BEGIN PRIVATE KEY-----') || 
-        !privateKey.endsWith('-----END PRIVATE KEY-----')) {
-      console.error('❌ Invalid private key format. Must be a valid PEM private key.');
-      console.error('❌ Private key should start with "-----BEGIN PRIVATE KEY-----" and end with "-----END PRIVATE KEY-----"');
+    console.log('🔍 Private key first 50 chars:', privateKey.substring(0, 50));
+    console.log('🔍 Private key last 50 chars:', privateKey.substring(privateKey.length - 50));
+    console.log('🔍 Private key length:', privateKey.length);
+
+    if (!process.env.FIREBASE_PROJECT_ID || !privateKey || !process.env.FIREBASE_CLIENT_EMAIL) {
+      console.error('❌ Firebase credentials not fully configured. Push notifications will be disabled.');
+      console.error('Missing:', {
+        projectId: !process.env.FIREBASE_PROJECT_ID,
+        privateKey: !privateKey,
+        clientEmail: !process.env.FIREBASE_CLIENT_EMAIL,
+      });
       return null;
     }
 
