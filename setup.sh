@@ -2,7 +2,7 @@
 cd backend/services/auth-service
 npx prisma migrate dev
 cd ../notification-service
-npx prisma migrate dev
+npx prisma generate client
 
 #Run chatbot service migration
 cd ../chatbot-service
@@ -10,7 +10,7 @@ npx prisma migrate dev
 
 # Run Shared Migration and Seed
 cd ../../../shared
-npx prisma migrate dev
+npx prisma generate client
 node seed.js
 
 # Start all services with PM2
