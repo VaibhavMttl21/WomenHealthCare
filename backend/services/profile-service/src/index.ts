@@ -5,7 +5,6 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 
 import profileRoutes from './routes/profile.routes';
-import doctorRoutes from './routes/doctor.routes';
 import { errorHandler } from './middleware/errorHandler';
 import { notFound } from './middleware/notFound';
 
@@ -39,8 +38,7 @@ app.get('/health', (req, res) => {
 });
 
 // API Routes
-app.use('/profile', profileRoutes);
-app.use('/doctors', doctorRoutes);
+app.use('/api/profile', profileRoutes);
 
 // Error handling middleware
 app.use(notFound);
