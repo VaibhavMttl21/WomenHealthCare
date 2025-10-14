@@ -55,8 +55,10 @@ class NotificationService {
         },
       });
 
+      console.log(`🔍 Found ${deviceTokens.length} active device token(s) for user: ${userId}`);
+
       if (deviceTokens.length === 0) {
-        console.warn(`No active device tokens found for user: ${userId}`);
+        console.warn(`⚠️ No active device tokens found for user: ${userId}`);
         return {
           success: true,
           notificationId,
@@ -66,6 +68,9 @@ class NotificationService {
 
       // Send to all user's devices
       const tokens = deviceTokens.map((dt) => dt.token);
+      console.log(`📤 Attempting to send notification to ${tokens.length} device(s)`);
+      console.log(`📋 Notification: ${notification.title} - ${notification.body}`);
+      
       const result = await fcmService.sendToMultipleTokens(tokens, notification);
 
       // Update last used time for successful tokens
