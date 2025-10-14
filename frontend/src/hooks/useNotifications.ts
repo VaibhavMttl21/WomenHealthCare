@@ -77,11 +77,12 @@ export const useNotifications = () => {
               createdAt: new Date().toISOString(),
             };
             console.log('💾 Adding notification to Redux store:', notification);
+            console.log('💾 Adding notification to Redux store:', notification);
             dispatch(addNotification(notification));
           }
         });
 
-        console.log('✅ Notifications initialized successfully for user:', user.id);
+        console.log('✅ Notifications initialized successfully');
       } catch (error) {
         console.error('❌ Error initializing notifications:', error);
         if (error instanceof Error) {
