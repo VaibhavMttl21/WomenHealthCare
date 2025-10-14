@@ -9,7 +9,7 @@ npx prisma generate client
 
 # Run Shared Migration and Seed
 cd ../../../shared
-npx prisma migrate dev
+npx prisma generate client
 node seed.js
 
 # Start all services with PM2

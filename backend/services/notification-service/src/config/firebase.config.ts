@@ -85,6 +85,7 @@ const initializeFirebase = () => {
   }
 };
 
+
 // Get messaging instance
 const getMessaging = () => {
   try {
