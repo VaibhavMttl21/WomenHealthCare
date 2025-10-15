@@ -206,6 +206,58 @@ class NotificationService {
   }
 
   /**
+   * Unregister all device tokens for a user (for logout)
+   */
+  async unregisterUserDeviceTokens(userId: string): Promise<{ success: boolean; message: string }> {
+    try {
+      console.log(`🔄 [Service] Starting token deactivation for user: ${userId}`);
+      
+      // First, check how many active tokens exist
+      const activeTokens = await prisma.deviceToken.findMany({
+        where: {
+          userId,
+          isActive: true,
+        },
+      });
+      
+      console.log(`🔍 [Service] Found ${activeTokens.length} active token(s) for user: ${userId}`);
+      
+      if (activeTokens.length > 0) {
+        console.log('🔍 [Service] Token details:', activeTokens.map(t => ({
+          id: t.id,
+          deviceType: t.deviceType,
+          deviceName: t.deviceName,
+          tokenPreview: t.token.substring(0, 20) + '...',
+        })));
+      }
+      
+      // Deactivate all active tokens
+      const result = await prisma.deviceToken.updateMany({
+        where: {
+          userId,
+          isActive: true,
+        },
+        data: {
+          isActive: false,
+        },
+      });
+      
+      console.log(`✅ [Service] Deactivated ${result.count} device token(s) for user: ${userId}`);
+      
+      return {
+        success: true,
+        message: `Deactivated ${result.count} device(s)`,
+      };
+    } catch (error) {
+      console.error('❌ [Service] Error unregistering user device tokens:', error);
+      return {
+        success: false,
+        message: 'Failed to unregister device tokens',
+      };
+    }
+  }
+
+  /**
    * Get user notifications
    */
   async getUserNotifications(

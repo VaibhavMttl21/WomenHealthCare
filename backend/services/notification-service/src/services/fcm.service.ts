@@ -92,6 +92,23 @@ class FCMService {
             link: payload.actionUrl || '/',
           },
         },
+        android: {
+          priority: (payload.type === 'emergency' ? 'high' : 'normal') as 'high' | 'normal',
+          notification: {
+            channelId: 'default',
+            sound: 'default',
+            clickAction: payload.actionUrl,
+          },
+        },
+        apns: {
+          payload: {
+            aps: {
+              sound: 'default',
+              badge: 1,
+              category: payload.type,
+            },
+          },
+        },
       };
 
       console.log('📤 Sending message:', JSON.stringify(message, null, 2));
@@ -219,8 +236,8 @@ class FCMService {
       token: token,
       webpush: {
         notification: {
-          icon: '/notification-icon.png',
-          badge: '/badge-icon.png',
+          icon: '/vite.svg',
+          badge: '/vite.svg',
           image: payload.imageUrl,
           requireInteraction: payload.type === 'emergency',
           tag: payload.type,
@@ -230,7 +247,7 @@ class FCMService {
         },
       },
       android: {
-        priority: payload.type === 'emergency' ? 'high' : 'normal',
+        priority: (payload.type === 'emergency' ? 'high' : 'normal') as 'high' | 'normal',
         notification: {
           channelId: 'default',
           sound: 'default',

@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Notification } from '../../types/notification';
+import { logoutUser } from './authSlice';
 
 interface NotificationState {
   notifications: Notification[];
@@ -77,6 +78,26 @@ const notificationSlice = createSlice({
       state.offset = 0;
       state.hasMore = true;
     },
+    clearAllNotifications: (state) => {
+      state.notifications = [];
+      state.unreadCount = 0;
+      state.offset = 0;
+      state.hasMore = true;
+      state.isLoading = false;
+      state.error = null;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      // Clear notifications on logout
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.notifications = [];
+        state.unreadCount = 0;
+        state.offset = 0;
+        state.hasMore = true;
+        state.isLoading = false;
+        state.error = null;
+      });
   },
 });
 
@@ -93,6 +114,7 @@ export const {
   setHasMore,
   setOffset,
   resetNotifications,
+  clearAllNotifications,
 } = notificationSlice.actions;
 
 export default notificationSlice.reducer;
