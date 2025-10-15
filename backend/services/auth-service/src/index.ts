@@ -3,12 +3,25 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import path from 'path';
 
 import authRoutes from './routes/auth.routes';
 import { errorHandler } from './middleware/errorHandler';
 import { notFound } from './middleware/notFound';
 
-dotenv.config();
+// Debug BEFORE loading dotenv
+console.log('🔍 DEBUG BEFORE DOTENV: process.env.PORT =', process.env.PORT);
+
+// Load .env from the service directory with override
+dotenv.config({ 
+  path: path.resolve(__dirname, '../.env'),
+  override: true  // Override any existing environment variables
+});
+
+// Debug AFTER loading dotenv
+console.log('🔍 DEBUG AFTER DOTENV: process.env.PORT =', process.env.PORT);
+console.log('🔍 DEBUG: __dirname =', __dirname);
+console.log('🔍 DEBUG: .env path =', path.resolve(__dirname, '../.env'));
 
 const app = express();
 const PORT = process.env.PORT || 3001;

@@ -1,13 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Button } from '../ui/Button';
 import { Heart, CheckCircle } from '../ui/Icons';
 
 interface MealLog {
   id: string;
   mealType: 'breakfast' | 'lunch' | 'dinner';
   emoji: string;
-  bgColor: string;
   status: 'logged' | 'pending' | 'upcoming';
   description: string;
 }
@@ -17,7 +15,6 @@ const mealData: MealLog[] = [
     id: '1',
     mealType: 'breakfast',
     emoji: '☀️',
-    bgColor: 'bg-yellow-200',
     status: 'logged',
     description: 'Poha & Milk logged'
   },
@@ -25,31 +22,19 @@ const mealData: MealLog[] = [
     id: '2',
     mealType: 'lunch',
     emoji: '🌞',
-    bgColor: 'bg-orange-200',
     status: 'pending',
-    description: 'Time to log your meal'
+    description: 'Time to plan your meal'
   },
   {
     id: '3',
     mealType: 'dinner',
     emoji: '🌙',
-    bgColor: 'bg-gray-200',
     status: 'upcoming',
     description: 'Coming up later'
   }
 ];
 
 export const MealPlanner: React.FC = () => {
-  const handleLogMeal = (mealId?: string) => {
-    console.log('Logging meal:', mealId || 'new meal');
-    // Handle meal logging logic
-  };
-
-  const handleAddMeal = () => {
-    console.log('Opening meal logging interface');
-    // Handle navigation to meal logging interface
-  };
-
   return (
     <motion.div 
       className="w-full"
@@ -165,7 +150,7 @@ export const MealPlanner: React.FC = () => {
                     transition: { duration: 0.2 }
                   }}
                 >
-                  <div className={`w-12 h-12 sm:w-14 sm:h-14 ${meal.bgColor} rounded-full flex items-center justify-center text-2xl sm:text-3xl flex-shrink-0 shadow-md ${
+                  <div className={`w-12 h-12 sm:w-14 sm:h-14 bg-white rounded-full flex items-center justify-center text-2xl sm:text-3xl flex-shrink-0 shadow-md ${
                     meal.status === 'upcoming' ? 'opacity-60' : ''
                   }`}>
                     {meal.emoji}
@@ -191,24 +176,6 @@ export const MealPlanner: React.FC = () => {
                       {meal.description}
                     </p>
                   </div>
-                  {meal.status === 'pending' && (
-                    <motion.button 
-                      className="px-3 sm:px-4 py-1.5 sm:py-2 text-white text-xs sm:text-sm font-semibold rounded-full shadow-sm flex-shrink-0"
-                      style={{ 
-                        fontFamily: 'Inter, sans-serif',
-                        background: 'linear-gradient(135deg, #6b46c1 0%, #7c3aed 50%, #a78bfa 100%)'
-                      }}
-                      whileHover={{
-                        scale: 1.05,
-                        boxShadow: '0 4px 12px rgba(107, 70, 193, 0.4)',
-                        transition: { duration: 0.2 }
-                      }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => handleLogMeal(meal.id)}
-                    >
-                      Log Now
-                    </motion.button>
-                  )}
                   {meal.status === 'logged' && (
                     <CheckCircle className="h-6 w-6 sm:h-7 sm:w-7 text-green-500 flex-shrink-0" />
                   )}
@@ -218,7 +185,7 @@ export const MealPlanner: React.FC = () => {
 
             {/* Tip Box */}
             <motion.div 
-              className="p-4 sm:p-5 rounded-2xl mb-5 sm:mb-6"
+              className="p-4 sm:p-5 rounded-2xl"
               style={{
                 background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)'
               }}
@@ -233,34 +200,6 @@ export const MealPlanner: React.FC = () => {
               >
                 <span className="font-semibold">🌿 Wellness Tip:</span> Include more seasonal fruits & vegetables for optimal nutrition!
               </p>
-            </motion.div>
-
-            {/* Add Meal Button */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.8 }}
-              viewport={{ once: true }}
-            >
-              <Button 
-                onClick={handleAddMeal}
-                className="relative overflow-hidden w-full text-white font-semibold py-3.5 sm:py-4 rounded-2xl shadow-lg transition-all duration-300 text-sm sm:text-base group"
-                style={{
-                  background: 'linear-gradient(135deg, #4a5d23 0%, #6b8e23 50%, #8fbc40 100%)',
-                  fontFamily: 'Inter, sans-serif'
-                }}
-              >
-                <motion.span 
-                  className="relative z-10"
-                  whileHover={{ scale: 1.02 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  Add Meal
-                </motion.span>
-                
-                {/* Shimmer effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
-              </Button>
             </motion.div>
           </div>
 
