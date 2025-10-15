@@ -626,40 +626,6 @@ export const Trash2: React.FC<IconProps> = ({ className = "", size = 24 }) => (
   </svg>
 );
 
-export const ArrowLeft: React.FC<IconProps> = ({ className = "", size = 24 }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className={className}
-  >
-    <line x1="19" y1="12" x2="5" y2="12"></line>
-    <polyline points="12,19 5,12 12,5"></polyline>
-  </svg>
-);
-
-export const ArrowRight: React.FC<IconProps> = ({ className = "", size = 24 }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className={className}
-  >
-    <line x1="5" y1="12" x2="19" y2="12"></line>
-    <polyline points="12,5 19,12 12,19"></polyline>
-  </svg>
-);
-
 export const Check: React.FC<IconProps> = ({ className = "", size = 24 }) => (
   <svg
     width={size}
@@ -676,7 +642,7 @@ export const Check: React.FC<IconProps> = ({ className = "", size = 24 }) => (
   </svg>
 );
 
-export const Pencil: React.FC<IconProps> = ({ className = "", size = 24 }) => (
+export const ChevronUp: React.FC<IconProps> = ({ className = "", size = 24 }) => (
   <svg
     width={size}
     height={size}
@@ -688,29 +654,11 @@ export const Pencil: React.FC<IconProps> = ({ className = "", size = 24 }) => (
     strokeLinejoin="round"
     className={className}
   >
-    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+    <polyline points="18,15 12,9 6,15"></polyline>
   </svg>
 );
 
-export const Image: React.FC<IconProps> = ({ className = "", size = 24 }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className={className}
-  >
-    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-    <circle cx="8.5" cy="8.5" r="1.5"></circle>
-    <polyline points="21,15 16,10 5,21"></polyline>
-  </svg>
-);
-
-export const Smile: React.FC<IconProps> = ({ className = "", size = 24 }) => (
+export const Info: React.FC<IconProps> = ({ className = "", size = 24 }) => (
   <svg
     width={size}
     height={size}
@@ -723,13 +671,12 @@ export const Smile: React.FC<IconProps> = ({ className = "", size = 24 }) => (
     className={className}
   >
     <circle cx="12" cy="12" r="10"></circle>
-    <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
-    <line x1="9" y1="9" x2="9.01" y2="9"></line>
-    <line x1="15" y1="9" x2="15.01" y2="9"></line>
+    <line x1="12" y1="16" x2="12" y2="12"></line>
+    <line x1="12" y1="8" x2="12.01" y2="8"></line>
   </svg>
 );
 
-export const Paperclip: React.FC<IconProps> = ({ className = "", size = 24 }) => (
+export const RefreshCw: React.FC<IconProps> = ({ className = "", size = 24 }) => (
   <svg
     width={size}
     height={size}
@@ -741,6 +688,41 @@ export const Paperclip: React.FC<IconProps> = ({ className = "", size = 24 }) =>
     strokeLinejoin="round"
     className={className}
   >
-    <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+    <polyline points="23,4 23,10 17,10"></polyline>
+    <polyline points="1,20 1,14 7,14"></polyline>
+    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+  </svg>
+);
+
+export const Filter: React.FC<IconProps> = ({ className = "", size = 24 }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <polygon points="22,3 2,3 10,12.46 10,19 14,21 14,12.46 22,3"></polygon>
+  </svg>
+);
+
+export const Search: React.FC<IconProps> = ({ className = "", size = 24 }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <circle cx="11" cy="11" r="8"></circle>
+    <path d="m21 21-4.35-4.35"></path>
   </svg>
 );

@@ -2,11 +2,24 @@ import express, { Request, Response, NextFunction } from 'express';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { PrismaClient, MessageRole } from '@prisma/client';
 import dotenv from 'dotenv';
+import path from 'path';
 import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
 
-dotenv.config();
+// Debug BEFORE loading dotenv
+console.log('🔍 CHATBOT DEBUG BEFORE DOTENV: process.env.PORT =', process.env.PORT);
+
+// Load .env from the service directory with override
+dotenv.config({ 
+  path: path.resolve(__dirname, '.env'),
+  override: true 
+});
+
+// Debug AFTER loading dotenv
+console.log('🔍 CHATBOT DEBUG AFTER DOTENV: process.env.PORT =', process.env.PORT);
+console.log('🔍 CHATBOT DEBUG: __dirname =', __dirname);
+console.log('🔍 CHATBOT DEBUG: .env path =', path.resolve(__dirname, '.env'));
 
 // Initialize Prisma Client
 const prisma = new PrismaClient();
