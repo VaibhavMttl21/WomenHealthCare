@@ -7,7 +7,7 @@ import { OnlineMembers } from './OnlineMembers';
 import { Radio, AlertCircle } from '../ui/Icons';
 import axios from 'axios';
 
-const CHAT_SERVICE_URL = import.meta.env.VITE_CHAT_SERVICE_URL || 'http://localhost:3005';
+const CHAT_SERVICE_URL = import.meta.env.VITE_CHAT_SERVICE_URL || 'http://localhost:3002';
 
 export const BroadcastRoom: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);

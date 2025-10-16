@@ -4,7 +4,7 @@ import { authenticateToken, AuthRequest } from '../middleware/auth';
 
 const router = Router();
 
-const CHATBOT_SERVICE_URL = process.env.CHATBOT_SERVICE_URL || 'http://localhost:3003';
+const CHAT_SERVICE_URL = process.env.CHAT_SERVICE_URL || 'http://localhost:3002';
 
 // All chat routes require authentication
 router.use(authenticateToken);
@@ -12,7 +12,7 @@ router.use(authenticateToken);
 // Send message to chatbot
 router.post('/message', async (req: AuthRequest, res, next) => {
   try {
-    const response = await axios.post(`${CHATBOT_SERVICE_URL}/message`, {
+    const response = await axios.post(`${CHAT_SERVICE_URL}/message`, {
       ...req.body,
       userId: req.user?.id,
     }, {
@@ -35,7 +35,7 @@ router.post('/message', async (req: AuthRequest, res, next) => {
 router.get('/history/:sessionId', async (req: AuthRequest, res, next) => {
   try {
     const { sessionId } = req.params;
-    const response = await axios.get(`${CHATBOT_SERVICE_URL}/history/${sessionId}`, {
+    const response = await axios.get(`${CHAT_SERVICE_URL}/history/${sessionId}`, {
       headers: {
         Authorization: req.headers.authorization,
         'User-ID': req.user?.id,
@@ -55,7 +55,7 @@ router.get('/history/:sessionId', async (req: AuthRequest, res, next) => {
 router.delete('/history/:sessionId', async (req: AuthRequest, res, next) => {
   try {
     const { sessionId } = req.params;
-    const response = await axios.delete(`${CHATBOT_SERVICE_URL}/history/${sessionId}`, {
+    const response = await axios.delete(`${CHAT_SERVICE_URL}/history/${sessionId}`, {
       headers: {
         Authorization: req.headers.authorization,
         'User-ID': req.user?.id,
@@ -74,7 +74,7 @@ router.delete('/history/:sessionId', async (req: AuthRequest, res, next) => {
 // Get all chat sessions for user
 router.get('/sessions', async (req: AuthRequest, res, next) => {
   try {
-    const response = await axios.get(`${CHATBOT_SERVICE_URL}/sessions`, {
+    const response = await axios.get(`${CHAT_SERVICE_URL}/sessions`, {
       headers: {
         Authorization: req.headers.authorization,
         'User-ID': req.user?.id,

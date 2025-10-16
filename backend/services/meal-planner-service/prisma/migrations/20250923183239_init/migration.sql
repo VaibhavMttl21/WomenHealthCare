@@ -13,9 +13,6 @@ CREATE TYPE "AppointmentType" AS ENUM ('CONSULTATION', 'CHECKUP', 'EMERGENCY', '
 -- CreateEnum
 CREATE TYPE "MessageRole" AS ENUM ('USER', 'ASSISTANT', 'SYSTEM');
 
--- CreateEnum
-CREATE TYPE "MealType" AS ENUM ('BREAKFAST', 'LUNCH', 'DINNER', 'SNACK');
-
 -- CreateTable
 CREATE TABLE "users" (
     "id" TEXT NOT NULL,
@@ -59,9 +56,6 @@ CREATE TABLE "user_profiles" (
     "educationLevel" TEXT,
     "occupation" TEXT,
     "familyIncome" TEXT,
-    "dietaryPreferences" TEXT,
-    "foodAllergies" TEXT,
-    "preferredCuisine" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -177,32 +171,6 @@ CREATE TABLE "notifications" (
 );
 
 -- CreateTable
-CREATE TABLE "meal_plans" (
-    "id" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
-    "title" TEXT NOT NULL DEFAULT 'Daily Meal Plan',
-    "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "isActive" BOOLEAN NOT NULL DEFAULT true,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "meal_plans_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "meal_suggestions" (
-    "id" TEXT NOT NULL,
-    "mealPlanId" TEXT NOT NULL,
-    "type" "MealType" NOT NULL,
-    "content" TEXT NOT NULL,
-    "orderIndex" INTEGER NOT NULL DEFAULT 0,
-    "isSelected" BOOLEAN NOT NULL DEFAULT false,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "meal_suggestions_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "system_config" (
     "id" TEXT NOT NULL,
     "key" TEXT NOT NULL,
@@ -228,18 +196,6 @@ CREATE UNIQUE INDEX "doctor_profiles_userId_key" ON "doctor_profiles"("userId");
 CREATE UNIQUE INDEX "doctor_profiles_licenseNumber_key" ON "doctor_profiles"("licenseNumber");
 
 -- CreateIndex
-CREATE INDEX "meal_plans_userId_idx" ON "meal_plans"("userId");
-
--- CreateIndex
-CREATE INDEX "meal_plans_date_idx" ON "meal_plans"("date");
-
--- CreateIndex
-CREATE INDEX "meal_suggestions_mealPlanId_idx" ON "meal_suggestions"("mealPlanId");
-
--- CreateIndex
-CREATE INDEX "meal_suggestions_type_idx" ON "meal_suggestions"("type");
-
--- CreateIndex
 CREATE UNIQUE INDEX "system_config_key_key" ON "system_config"("key");
 
 -- AddForeignKey
@@ -262,9 +218,3 @@ ALTER TABLE "chat_messages" ADD CONSTRAINT "chat_messages_sessionId_fkey" FOREIG
 
 -- AddForeignKey
 ALTER TABLE "chat_messages" ADD CONSTRAINT "chat_messages_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "meal_plans" ADD CONSTRAINT "meal_plans_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "meal_suggestions" ADD CONSTRAINT "meal_suggestions_mealPlanId_fkey" FOREIGN KEY ("mealPlanId") REFERENCES "meal_plans"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { BroadcastMessage } from '../../store/slices/broadcastSlice';
-import { Pencil, Trash2, Check, X } from '../ui/Icons';
+import {  Trash2, Check, X } from '../ui/Icons';
+import { Pencil } from 'lucide-react';
 
 interface MessageItemProps {
   message: BroadcastMessage;

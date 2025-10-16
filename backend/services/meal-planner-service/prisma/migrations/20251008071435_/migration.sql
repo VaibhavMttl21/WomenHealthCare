@@ -1,19 +1,6 @@
-/*
-  Warnings:
-
-  - You are about to drop the column `dietaryPreferences` on the `user_profiles` table. All the data in the column will be lost.
-  - You are about to drop the column `foodAllergies` on the `user_profiles` table. All the data in the column will be lost.
-  - You are about to drop the column `preferredCuisine` on the `user_profiles` table. All the data in the column will be lost.
-
-*/
 -- AlterTable
 ALTER TABLE "notifications" ADD COLUMN     "isSent" BOOLEAN NOT NULL DEFAULT false,
 ADD COLUMN     "sentAt" TIMESTAMP(3);
-
--- AlterTable
-ALTER TABLE "user_profiles" DROP COLUMN "dietaryPreferences",
-DROP COLUMN "foodAllergies",
-DROP COLUMN "preferredCuisine";
 
 -- CreateTable
 CREATE TABLE "device_tokens" (
