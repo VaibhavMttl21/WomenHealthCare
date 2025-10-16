@@ -15,7 +15,7 @@ const OnboardingPage = React.lazy(() => import('./pages/auth/OnboardingPage'));
 const DashboardPage = React.lazy(() => import('./pages/dashboard/DashboardPage'));
 const ProfilePage = React.lazy(() => import('./pages/profile/ProfilePage'));
 const CompleteProfilePage = React.lazy(() => import('./pages/profile/CompleteProfilePage'));
-const ChatPage = React.lazy(() => import('./pages/chat/ChatPage'));
+const ChatPage = React.lazy(() => import('./pages/chat/ChatBotPage'));
 const AppointmentsPage = React.lazy(() => import('./pages/appointments/AppointmentsPage'));
 const MapPage = React.lazy(() => import('./pages/map/MapPage'));
 const MealPlannerPage = React.lazy(() => import('./pages/meal/MealPlannerPage'));

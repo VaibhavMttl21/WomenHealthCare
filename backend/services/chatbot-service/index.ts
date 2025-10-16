@@ -1,11 +1,13 @@
 import express, { Request, Response, NextFunction } from 'express';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { PrismaClient, MessageRole } from '@prisma/client';
-import dotenv from 'dotenv';
 import path from 'path';
 import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
+import dotenv from 'dotenv';
+import multer from 'multer';
+import { bucket } from './src/config/firebase.config';
 
 // Debug BEFORE loading dotenv
 console.log('🔍 CHATBOT DEBUG BEFORE DOTENV: process.env.PORT =', process.env.PORT);
@@ -32,9 +34,27 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 // Middleware
 app.use(helmet());
-app.use(cors());
+app.use(cors({
+  origin: "*",
+  credentials: true,
+}));
+
 app.use(compression());
 app.use(express.json());
+
+// Multer configuration for Firebase Storage
+const upload = multer({
+  storage: multer.memoryStorage(), // Store in memory for Firebase upload
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid file type. Only JPEG, PNG, GIF, and WebP are allowed.'));
+    }
+  },
+});
 
 // System instruction for health context
 const SYSTEM_INSTRUCTION = `You are a compassionate and knowledgeable women's health assistant for a rural healthcare platform. 
@@ -320,6 +340,42 @@ app.get('/sessions', async (req: Request, res: Response) => {
       success: false,
       message: 'Failed to retrieve sessions',
     });
+  }
+});
+
+// Image upload endpoint with Firebase Storage
+app.post('/upload-image', upload.single('image'), async (req: Request, res: Response) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: 'No file uploaded' });
+    }
+
+    // Create unique filename
+    const timestamp = Date.now();
+    const uniqueSuffix = Math.round(Math.random() * 1E9);
+    const filename = `chatbotimages/${timestamp}-${uniqueSuffix}${path.extname(req.file.originalname)}`;
+
+    // Create file in Firebase Storage
+    const file = bucket.file(filename);
+    
+    // Upload file buffer to Firebase Storage
+    await file.save(req.file.buffer, {
+      metadata: {
+        contentType: req.file.mimetype,
+      },
+      public: true, // Make file publicly accessible
+    });
+
+    // Get public URL
+    const publicUrl = `https://storage.googleapis.com/${bucket.name}/${filename}`;
+
+    res.json({
+      success: true,
+      imageUrl: publicUrl,
+    });
+  } catch (error) {
+    console.error('Image upload error:', error);
+    res.status(500).json({ success: false, message: 'Failed to upload image' });
   }
 });
 

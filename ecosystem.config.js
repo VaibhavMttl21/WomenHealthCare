@@ -42,6 +42,14 @@ module.exports = {
         NODE_ENV: 'development'
       }
     },
+        {
+      name: 'meal-planner-service',
+      script: 'npm run dev',
+      cwd: './backend/services/meal-planner-service',
+      env: {
+        NODE_ENV: 'development'
+      }
+    },
     {
       name: 'frontend',
       script: 'npm run dev',

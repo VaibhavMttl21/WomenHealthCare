@@ -26,6 +26,7 @@ console.log('🔍 API GATEWAY DEBUG: .env path =', path.resolve(__dirname, '../.
 import authRoutes from './routes/auth.routes';
 import profileRoutes from './routes/profile.routes';
 import chatRoutes from './routes/chat.routes';
+import chatbotRoutes from './routes/chatbot.routes';
 import appointmentRoutes from './routes/appointment.routes';
 import notificationRoutes from './routes/notifications.route';
 import mealPlannerRoutes from './routes/mealplanner.routes';
@@ -82,6 +83,7 @@ app.get('/api/debug/token', authenticateToken, (req: AuthRequest, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/chatbot', chatbotRoutes);
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/mealplanner', mealPlannerRoutes);

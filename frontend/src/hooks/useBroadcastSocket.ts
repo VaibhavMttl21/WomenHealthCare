@@ -16,7 +16,7 @@ import {
 } from '../store/slices/broadcastSlice';
 import toast from 'react-hot-toast';
 
-const SOCKET_URL = import.meta.env.VITE_CHAT_SERVICE_URL || 'http://localhost:3005';
+const SOCKET_URL = import.meta.env.VITE_CHAT_SERVICE_URL || 'http://localhost:3002';
 
 export const useBroadcastSocket = () => {
   const socketRef = useRef<Socket | null>(null);

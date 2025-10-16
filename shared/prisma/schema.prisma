@@ -47,6 +47,13 @@ enum MessageRole {
   SYSTEM
 }
 
+enum MealType {
+  BREAKFAST
+  LUNCH
+  DINNER
+  SNACK
+}
+
 // Main User model
 model User {
   id            String    @id @default(cuid())
@@ -68,8 +75,10 @@ model User {
   appointments  Appointment[]
   chatSessions  ChatSession[]
   sentMessages  ChatMessage[] @relation("UserSentMessages")
-
+  mealPlans     MealPlan[]
+  
   @@map("users")
+  
 }
 
 // Patient/User Profile
@@ -298,6 +307,63 @@ model DeviceToken {
 
   @@index([userId])
   @@map("device_tokens")
+}
+
+// Meal Plan - Main plan record for Meal Planner Service
+model MealPlan {
+  id          String    @id @default(cuid())
+  userId      String
+  title       String    @default("Daily Meal Plan")
+  date        DateTime  @default(now())  // Date for which the meal plan is created
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relationships
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  suggestions MealSuggestion[]
+
+  @@map("meal_plans")
+  @@index([userId])
+  @@index([date])
+}
+
+// Meal Suggestion - Individual meal suggestions for Meal Planner Service
+model MealSuggestion {
+  id          String    @id @default(cuid())
+  mealPlanId  String
+  type        MealType  // breakfast, lunch, dinner, snack
+  content     String    // JSON string containing structured meal info
+  // Content structure: { name, why, benefits, facts, steps }
+  orderIndex  Int       @default(0)  // To maintain order (first suggestion, second suggestion)
+  isSelected  Boolean   @default(false)  // User can mark which suggestion they prefer
+  createdAt   DateTime  @default(now())
+
+  // Relationships
+  mealPlan    MealPlan  @relation(fields: [mealPlanId], references: [id], onDelete: Cascade)
+
+  @@map("meal_suggestions")
+  @@index([mealPlanId])
+  @@index([type])
+}
+
+// Broadcast Messages
+model BroadcastMessage {
+  id          String    @id @default(cuid())
+  userId      String
+  userName    String
+  userAvatar  String?
+  content     String
+  imageUrl    String?
+  edited      Boolean   @default(false)
+  editedAt    DateTime?
+  timestamp   DateTime  @default(now())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("broadcast_messages")
+  @@index([userId])
+  @@index([timestamp])
 }
 
 // System Configuration

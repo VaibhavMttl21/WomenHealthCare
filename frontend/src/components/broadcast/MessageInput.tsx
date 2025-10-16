@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { Send, Image as ImageIcon, Smile } from '../ui/Icons';
+import { Send, Smile, Image } from 'lucide-react';
+import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
 
 interface MessageInputProps {
   onSendMessage: (content: string, imageUrl?: string) => void;
@@ -8,12 +9,6 @@ interface MessageInputProps {
   onImageUpload: (file: File) => Promise<string | null>;
   disabled?: boolean;
 }
-
-const COMMON_EMOJIS = [
-  '😊', '😂', '❤️', '👍', '🙏', '😍', '🎉', '😘', '💕', '😭',
-  '🤗', '😎', '🤔', '😴', '😱', '🔥', '✨', '💪', '👏', '🙌',
-  '🤰', '👶', '🍼', '💊', '🏥', '👨‍⚕️', '👩‍⚕️', '❓', '✅', '📱'
-];
 
 export const MessageInput: React.FC<MessageInputProps> = ({
   onSendMessage,
@@ -68,9 +63,8 @@ export const MessageInput: React.FC<MessageInputProps> = ({
     }
   };
 
-  const handleEmojiClick = (emoji: string) => {
-    setMessage((prev) => prev + emoji);
-    setShowEmojiPicker(false);
+  const handleEmojiClick = (emojiData: EmojiClickData) => {
+    setMessage((prev) => prev + emojiData.emoji);
     textareaRef.current?.focus();
   };
 
@@ -113,19 +107,17 @@ export const MessageInput: React.FC<MessageInputProps> = ({
     <div className="relative">
       {/* Emoji Picker */}
       {showEmojiPicker && (
-        <div className="absolute bottom-full mb-2 left-0 bg-white rounded-lg shadow-lg p-4 z-10 border border-gray-200">
-          <div className="grid grid-cols-10 gap-2 max-w-md">
-            {COMMON_EMOJIS.map((emoji, index) => (
-              <button
-                key={index}
-                onClick={() => handleEmojiClick(emoji)}
-                className="text-2xl hover:bg-gray-100 rounded p-1 transition-colors"
-                type="button"
-              >
-                {emoji}
-              </button>
-            ))}
-          </div>
+        <div className="absolute bottom-full mb-2 left-0 z-10">
+          <EmojiPicker
+            onEmojiClick={handleEmojiClick}
+            width={350}
+            height={400}
+            searchDisabled={false}
+            skinTonesDisabled={false}
+            previewConfig={{
+              showPreview: false
+            }}
+          />
         </div>
       )}
 
@@ -150,7 +142,7 @@ export const MessageInput: React.FC<MessageInputProps> = ({
           type="button"
           title="Upload image"
         >
-          <ImageIcon className="w-5 h-5" />
+          <Image className="w-5 h-5" />
         </button>
         <input
           ref={fileInputRef}
