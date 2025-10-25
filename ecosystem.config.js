@@ -41,6 +41,14 @@ module.exports = {
       env: {
         NODE_ENV: 'development'
       }
+    },
+    {
+      name: 'appointment-service',
+      script: 'npm run dev',
+      cwd:  './backend/services/appointment-service',
+      env: {
+        NODE_ENV: 'development'
+      }
     }
   ]
 };

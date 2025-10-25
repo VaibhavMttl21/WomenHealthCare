@@ -1,214 +1,268 @@
-import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Card, CardContent } from '../../components/ui/Card';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { useAppSelector } from '../../hooks/useAppSelector';
+import {
+  fetchAppointments,
+  cancelAppointment,
+  clearError,
+  clearSuccess,
+} from '../../store/slices/appointmentSlice';
+import { AppointmentCard } from '../../components/appointments/AppointmentCard';
+import { AppointmentStatus } from '../../types/appointment';
 import { Button } from '../../components/ui/Button';
-import { Calendar, Clock, User, Heart, Plus, CheckCircle } from '../../components/ui/Icons';
+import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
+import { Calendar, Clock, AlertCircle } from '../../components/ui/Icons';
 
 const AppointmentsPage: React.FC = () => {
-  const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState('upcoming');
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { appointments, loading, error, success } = useAppSelector(
+    (state) => state.appointments
+  );
+  const [activeTab, setActiveTab] = useState<'upcoming' | 'past'>('upcoming');
 
-  const upcomingAppointments = [
-    {
-      id: 1,
-      doctor: 'Dr. Priya Sharma',
-      specialty: 'Gynecologist',
-      date: '2024-12-28',
-      time: '10:00 AM',
-      type: 'Regular Checkup',
-      status: 'confirmed'
-    },
-    {
-      id: 2,
-      doctor: 'Dr. Rajesh Kumar',
-      specialty: 'Radiologist',
-      date: '2024-12-30',
-      time: '2:00 PM',
-      type: 'Ultrasound',
-      status: 'confirmed'
+  useEffect(() => {
+    dispatch(fetchAppointments());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => {
+        dispatch(clearSuccess());
+      }, 3000);
+      return () => clearTimeout(timer);
     }
-  ];
+  }, [success, dispatch]);
 
-  const pastAppointments = [
-    {
-      id: 3,
-      doctor: 'Dr. Priya Sharma',
-      specialty: 'Gynecologist',
-      date: '2024-12-15',
-      time: '11:00 AM',
-      type: 'Monthly Checkup',
-      status: 'completed'
-    },
-    {
-      id: 4,
-      doctor: 'Dr. Anjali Patel',
-      specialty: 'Nutritionist',
-      date: '2024-12-10',
-      time: '3:30 PM',
-      type: 'Diet Consultation',
-      status: 'completed'
-    }
-  ];
+  const handleViewAppointment = (appointment: any) => {
+    navigate(`/appointments/${appointment.id}`);
+  };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'confirmed':
-        return 'bg-green-100 text-green-800';
-      case 'completed':
-        return 'bg-blue-100 text-blue-800';
-      case 'cancelled':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
+  const handleCancelAppointment = async (appointment: any) => {
+    if (window.confirm('Are you sure you want to cancel this appointment?')) {
+      await dispatch(cancelAppointment(appointment.id));
+      dispatch(fetchAppointments());
     }
   };
 
+  const handleBookNew = () => {
+    navigate('/appointments/book');
+  };
+
+  const now = new Date();
+  const filteredAppointments = appointments.filter((appointment) => {
+    const appointmentDate = new Date(appointment.appointmentDate);
+    const isPast =
+      appointmentDate < now ||
+      appointment.status === AppointmentStatus.COMPLETED ||
+      appointment.status === AppointmentStatus.CANCELLED ||
+      appointment.status === AppointmentStatus.NO_SHOW;
+
+    return activeTab === 'past' ? isPast : !isPast;
+  });
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-blue-50 p-4">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center">
-            <Heart className="h-8 w-8 text-pink-500 mr-3" />
-            <h1 className="text-3xl font-bold text-gray-800">{t('appointments.myAppointments')}</h1>
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 p-4 md:p-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
+            My Appointments
+          </h1>
+          <p className="text-gray-600">
+            View and manage your healthcare appointments
+          </p>
+        </div>
+
+        {success && (
+          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center gap-3">
+            <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+              <span className="text-white text-lg">✓</span>
+            </div>
+            <div>
+              <p className="text-green-800 font-medium">{success}</p>
+            </div>
+            <button
+              onClick={() => dispatch(clearSuccess())}
+              className="ml-auto text-green-600 hover:text-green-800"
+            >
+              ✕
+            </button>
           </div>
-          <Button className="bg-pink-500 hover:bg-pink-600">
-            <Plus className="h-4 w-4 mr-2" />
-            {t('appointments.bookAppointment')}
+        )}
+
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3">
+            <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
+            <div>
+              <p className="text-red-800 font-medium">Error</p>
+              <p className="text-red-600 text-sm">{error}</p>
+            </div>
+            <button
+              onClick={() => dispatch(clearError())}
+              className="ml-auto text-red-600 hover:text-red-800"
+            >
+              ✕
+            </button>
+          </div>
+        )}
+
+        <div className="mb-6 flex gap-4">
+          <Button
+            onClick={handleBookNew}
+            variant="default"
+          >
+            + Book New Appointment
           </Button>
         </div>
 
-        {/* Tabs */}
-        <div className="flex space-x-1 mb-6">
-          <button
-            onClick={() => setActiveTab('upcoming')}
-            className={`px-4 py-2 rounded-lg font-medium ${
-              activeTab === 'upcoming'
-                ? 'bg-pink-500 text-white'
-                : 'bg-white text-gray-600 hover:bg-gray-50'
-            }`}
-          >
-            {t('appointments.upcoming')}
-          </button>
-          <button
-            onClick={() => setActiveTab('past')}
-            className={`px-4 py-2 rounded-lg font-medium ${
-              activeTab === 'past'
-                ? 'bg-pink-500 text-white'
-                : 'bg-white text-gray-600 hover:bg-gray-50'
-            }`}
-          >
-            Past Appointments
-          </button>
-        </div>
-
-        {/* Appointments List */}
-        <div className="space-y-4">
-          {activeTab === 'upcoming' && (
-            <>
-              {upcomingAppointments.length > 0 ? (
-                upcomingAppointments.map((appointment) => (
-                  <Card key={appointment.id} className="hover:shadow-lg transition-shadow">
-                    <CardContent className="p-6">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
-                          <div className="w-12 h-12 bg-gradient-to-r from-pink-400 to-purple-500 rounded-full flex items-center justify-center">
-                            <User className="h-6 w-6 text-white" />
-                          </div>
-                          <div>
-                            <h3 className="text-lg font-semibold text-gray-800">
-                              {appointment.doctor}
-                            </h3>
-                            <p className="text-sm text-gray-600">{appointment.specialty}</p>
-                            <div className="flex items-center space-x-4 mt-2">
-                              <div className="flex items-center text-sm text-gray-600">
-                                <Calendar className="h-4 w-4 mr-1" />
-                                {new Date(appointment.date).toLocaleDateString()}
-                              </div>
-                              <div className="flex items-center text-sm text-gray-600">
-                                <Clock className="h-4 w-4 mr-1" />
-                                {appointment.time}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(appointment.status)}`}>
-                            {appointment.status}
-                          </span>
-                          <p className="text-sm text-gray-600 mt-2">{appointment.type}</p>
-                          <div className="flex space-x-2 mt-3">
-                            <Button size="sm" variant="outline">
-                              {t('appointments.reschedule')}
-                            </Button>
-                            <Button size="sm" className="bg-green-500 hover:bg-green-600">
-                              {t('appointments.join')}
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))
-              ) : (
-                <Card>
-                  <CardContent className="p-12 text-center">
-                    <Calendar className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-gray-600 mb-2">
-                      {t('appointments.noAppointments')}
-                    </h3>
-                    <p className="text-gray-500 mb-4">You don't have any upcoming appointments</p>
-                    <Button className="bg-pink-500 hover:bg-pink-600">
-                      {t('appointments.bookAppointment')}
-                    </Button>
-                  </CardContent>
-                </Card>
+        <div className="mb-6 border-b border-gray-200">
+          <div className="flex gap-8">
+            <button
+              onClick={() => setActiveTab('upcoming')}
+              className={`pb-4 px-2 font-medium transition-all relative ${
+                activeTab === 'upcoming'
+                  ? 'text-pink-600'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <Calendar className="w-5 h-5" />
+                Upcoming
+              </div>
+              {activeTab === 'upcoming' && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-pink-600" />
               )}
-            </>
-          )}
-
-          {activeTab === 'past' && (
-            <>
-              {pastAppointments.map((appointment) => (
-                <Card key={appointment.id} className="opacity-75">
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-gray-400 rounded-full flex items-center justify-center">
-                          <CheckCircle className="h-6 w-6 text-white" />
-                        </div>
-                        <div>
-                          <h3 className="text-lg font-semibold text-gray-800">
-                            {appointment.doctor}
-                          </h3>
-                          <p className="text-sm text-gray-600">{appointment.specialty}</p>
-                          <div className="flex items-center space-x-4 mt-2">
-                            <div className="flex items-center text-sm text-gray-600">
-                              <Calendar className="h-4 w-4 mr-1" />
-                              {new Date(appointment.date).toLocaleDateString()}
-                            </div>
-                            <div className="flex items-center text-sm text-gray-600">
-                              <Clock className="h-4 w-4 mr-1" />
-                              {appointment.time}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(appointment.status)}`}>
-                          {appointment.status}
-                        </span>
-                        <p className="text-sm text-gray-600 mt-2">{appointment.type}</p>
-                        <Button size="sm" variant="outline" className="mt-3">
-                          View Report
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </>
-          )}
+            </button>
+            <button
+              onClick={() => setActiveTab('past')}
+              className={`pb-4 px-2 font-medium transition-all relative ${
+                activeTab === 'past'
+                  ? 'text-pink-600'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <Clock className="w-5 h-5" />
+                Past
+              </div>
+              {activeTab === 'past' && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-pink-600" />
+              )}
+            </button>
+          </div>
         </div>
+
+        {loading && (
+          <div className="flex justify-center items-center py-12">
+            <LoadingSpinner size="lg" />
+          </div>
+        )}
+
+        {!loading && (
+          <>
+            {filteredAppointments.length === 0 ? (
+              <div className="bg-white rounded-xl shadow-md p-12 text-center">
+                <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  {activeTab === 'upcoming' ? (
+                    <Calendar className="w-10 h-10 text-gray-400" />
+                  ) : (
+                    <Clock className="w-10 h-10 text-gray-400" />
+                  )}
+                </div>
+                <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                  {activeTab === 'upcoming'
+                    ? 'No Upcoming Appointments'
+                    : 'No Past Appointments'}
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  {activeTab === 'upcoming'
+                    ? "You don't have any upcoming appointments scheduled."
+                    : "You don't have any past appointment records."}
+                </p>
+                {activeTab === 'upcoming' && (
+                  <Button onClick={handleBookNew} variant="default">
+                    Book Your First Appointment
+                  </Button>
+                )}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {filteredAppointments.map((appointment) => (
+                  <AppointmentCard
+                    key={appointment.id}
+                    appointment={appointment}
+                    onView={handleViewAppointment}
+                    onCancel={
+                      appointment.status === AppointmentStatus.SCHEDULED ||
+                      appointment.status === AppointmentStatus.RESCHEDULED
+                        ? handleCancelAppointment
+                        : undefined
+                    }
+                    showDoctorInfo={true}
+                    showPatientInfo={false}
+                  />
+                ))}
+              </div>
+            )}
+          </>
+        )}
+
+        {!loading && appointments.length > 0 && (
+          <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white rounded-xl shadow-md p-6">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <Calendar className="w-6 h-6 text-blue-600" />
+                </div>
+                <div>
+                  <p className="text-gray-600 text-sm">Total Appointments</p>
+                  <p className="text-2xl font-bold text-gray-800">
+                    {appointments.length}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white rounded-xl shadow-md p-6">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                  <Calendar className="w-6 h-6 text-green-600" />
+                </div>
+                <div>
+                  <p className="text-gray-600 text-sm">Upcoming</p>
+                  <p className="text-2xl font-bold text-gray-800">
+                    {
+                      appointments.filter((a) => {
+                        const appointmentDate = new Date(a.appointmentDate);
+                        return (
+                          appointmentDate >= now &&
+                          a.status === AppointmentStatus.SCHEDULED
+                        );
+                      }).length
+                    }
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white rounded-xl shadow-md p-6">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                  <Clock className="w-6 h-6 text-purple-600" />
+                </div>
+                <div>
+                  <p className="text-gray-600 text-sm">Completed</p>
+                  <p className="text-2xl font-bold text-gray-800">
+                    {
+                      appointments.filter(
+                        (a) => a.status === AppointmentStatus.COMPLETED
+                      ).length
+                    }
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
