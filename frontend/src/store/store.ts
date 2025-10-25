@@ -6,6 +6,7 @@ import profileReducer from './slices/profileSlice';
 import uiReducer from './slices/uiSlice';
 import notificationReducer from './slices/notificationSlice';
 import broadcastReducer from './slices/broadcastSlice';
+import appointmentReducer from './slices/appointmentSlice';
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     ui: uiReducer,
     notification: notificationReducer,
     broadcast: broadcastReducer,
+    appointments: appointmentReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

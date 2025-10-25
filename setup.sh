@@ -6,7 +6,8 @@ npx prisma migrate  dev
 #Run chatbot service migration
 cd ../chatbot-service
 npx prisma generate client
-
+cd ../appointment-service
+npx prisma generate client
 # Run Shared Migration and Seed
 cd ../../../shared
 npx prisma generate client

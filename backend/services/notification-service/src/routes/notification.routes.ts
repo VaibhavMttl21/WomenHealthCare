@@ -4,6 +4,7 @@ import {
   sendBulkNotification,
   registerToken,
   unregisterToken,
+  unregisterUserTokens,
   getUserNotifications,
   markAsRead,
   markAllAsRead,
@@ -18,6 +19,7 @@ const router = Router();
 // Token management
 router.post('/tokens/register', registerToken);
 router.post('/tokens/unregister', unregisterToken);
+router.post('/tokens/unregister-user', unregisterUserTokens);
 
 // Send notifications
 router.post('/send', sendNotification);

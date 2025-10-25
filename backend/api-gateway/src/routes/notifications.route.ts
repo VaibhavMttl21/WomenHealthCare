@@ -33,6 +33,22 @@ router.post('/tokens/unregister', async (req, res, next) => {
   }
 });
 
+router.post('/tokens/unregister-user', async (req, res, next) => {
+  try {
+    console.log('[API Gateway] Forwarding unregister-user request to notification service:', req.body);
+    const response = await axios.post(`${NOTIFICATION_SERVICE_URL}/tokens/unregister-user`, req.body);
+    console.log('[API Gateway] Unregister-user response:', response.status);
+    res.status(response.status).json(response.data);
+  } catch (error: any) {
+    console.error('[API Gateway] Error forwarding unregister-user:', error.message);
+    if (error.response) {
+      res.status(error.response.status).json(error.response.data);
+    } else {
+      next(error);
+    }
+  }
+});
+
 // All other notification routes require authentication
 router.use(authenticateToken);
 

@@ -130,16 +130,46 @@ export const registerUser = createAsyncThunk(
 
 export const logoutUser = createAsyncThunk(
   'auth/logout',
-  async () => {
+  async (_, { getState }) => {
     try {
+      const state = getState() as any;
+      const userId = state.auth.user?.id;
+      
+      console.log('🔄 [Logout] Starting logout process for user:', userId);
+      
+      // Unregister notification tokens before logout
+      if (userId) {
+        try {
+          // Import dynamically to avoid circular dependencies
+          const { default: notificationService } = await import('../../services/notificationService');
+          console.log('🔄 [Logout] Calling unregisterUserDeviceTokens...');
+          const success = await notificationService.unregisterUserDeviceTokens(userId);
+          if (success) {
+            console.log('✅ [Logout] Device tokens unregistered successfully');
+          } else {
+            console.warn('⚠️ [Logout] Device token unregistration returned false');
+          }
+        } catch (notifError) {
+          console.error('❌ [Logout] Failed to unregister device tokens:', notifError);
+          // Continue with logout even if this fails
+        }
+      } else {
+        console.warn('⚠️ [Logout] No userId found, skipping token unregistration');
+      }
+      
+      console.log('🔄 [Logout] Calling backend logout API...');
       await authService.logout();
+      console.log('🔄 [Logout] Clearing local storage...');
       localStorage.removeItem('token');
       localStorage.removeItem('user');
+      console.log('✅ [Logout] Logout complete');
       return null;
     } catch (error: any) {
+      console.error('❌ [Logout] Error during logout:', error);
       // Even if logout API fails, we should clear local storage
       localStorage.removeItem('token');
       localStorage.removeItem('user');
+      console.log('✅ [Logout] Forced logout complete (after error)');
       return null;
     }
   }

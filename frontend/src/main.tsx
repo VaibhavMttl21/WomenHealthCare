@@ -21,6 +21,19 @@ if ('serviceWorker' in navigator) {
     .catch((error) => {
       console.error('❌ Firebase Service Worker registration failed:', error);
     });
+
+  // Listen for messages from service worker (notification clicks)
+  navigator.serviceWorker.addEventListener('message', (event) => {
+    console.log('📬 [Main] Message from service worker:', event.data);
+    
+    if (event.data?.type === 'NOTIFICATION_CLICK') {
+      const url = event.data.url;
+      if (url && url !== '/') {
+        // Use window.location to navigate
+        window.location.href = url;
+      }
+    }
+  });
 }
 
 // Create a client for React Query

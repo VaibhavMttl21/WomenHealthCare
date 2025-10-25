@@ -7,6 +7,7 @@ import { useNotifications } from './hooks/useNotifications';
 import { useAuthRestore } from './hooks/useAuthRestore';
 import { LoadingSpinner } from './components/ui/LoadingSpinner';
 import { ErrorBoundary } from './components/ui/ErrorBoundary';
+import { RoleBasedRoute } from './components/RoleBasedRoute';
 
 // Lazy load pages for better performance
 const LoginPage = React.lazy(() => import('./pages/auth/LoginPage'));
@@ -17,6 +18,10 @@ const ProfilePage = React.lazy(() => import('./pages/profile/ProfilePage'));
 const CompleteProfilePage = React.lazy(() => import('./pages/profile/CompleteProfilePage'));
 const ChatPage = React.lazy(() => import('./pages/chat/ChatPage'));
 const AppointmentsPage = React.lazy(() => import('./pages/appointments/AppointmentsPage'));
+const BookAppointmentPage = React.lazy(() => import('./pages/appointments/BookAppointmentPage'));
+const AppointmentDetailsPage = React.lazy(() => import('./pages/appointments/AppointmentDetailsPage'));
+const DoctorAppointmentsPage = React.lazy(() => import('./pages/appointments/DoctorAppointmentsPage'));
+const ManageAvailabilityPage = React.lazy(() => import('./pages/appointments/ManageAvailabilityPage'));
 const MapPage = React.lazy(() => import('./pages/map/MapPage'));
 const MealPlannerPage = React.lazy(() => import('./pages/meal/MealPlannerPage'));
 const BroadcastPage = React.lazy(() => import('./pages/broadcast/BroadcastPage'));
@@ -141,12 +146,47 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            {/* Patient-only appointment routes */}
             <Route
               path="/appointments"
               element={
-                <ProtectedRoute>
+                <RoleBasedRoute allowedRoles={['patient']}>
                   <AppointmentsPage />
+                </RoleBasedRoute>
+              }
+            />
+            <Route
+              path="/appointments/book"
+              element={
+                <RoleBasedRoute allowedRoles={['patient']}>
+                  <BookAppointmentPage />
+                </RoleBasedRoute>
+              }
+            />
+            {/* Shared appointment detail route (both patient and doctor) */}
+            <Route
+              path="/appointments/:id"
+              element={
+                <ProtectedRoute>
+                  <AppointmentDetailsPage />
                 </ProtectedRoute>
+              }
+            />
+            {/* Doctor-only appointment routes */}
+            <Route
+              path="/doctor/appointments"
+              element={
+                <RoleBasedRoute allowedRoles={['doctor']}>
+                  <DoctorAppointmentsPage />
+                </RoleBasedRoute>
+              }
+            />
+            <Route
+              path="/doctor/availability"
+              element={
+                <RoleBasedRoute allowedRoles={['doctor']}>
+                  <ManageAvailabilityPage />
+                </RoleBasedRoute>
               }
             />
             <Route

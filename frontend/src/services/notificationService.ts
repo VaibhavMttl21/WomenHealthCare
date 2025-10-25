@@ -60,15 +60,46 @@ class NotificationService {
    */
   async requestPermission(): Promise<boolean> {
     if (!('Notification' in window)) {
-      console.warn('This browser does not support notifications');
+      console.warn('⚠️ This browser does not support notifications');
+      return false;
+    }
+
+    // Check current permission state
+    const currentPermission = Notification.permission;
+    console.log('🔍 [notificationService] Current permission state:', currentPermission);
+
+    if (currentPermission === 'granted') {
+      console.log('✅ [notificationService] Permission already granted');
+      return true;
+    }
+
+    if (currentPermission === 'denied') {
+      console.warn('⚠️ [notificationService] Permission denied. User must enable in browser settings.');
+      console.warn('💡 Mac Chrome: System Preferences → Notifications → Google Chrome');
       return false;
     }
 
     try {
+      console.log('📱 [notificationService] Requesting notification permission...');
+      
+      // Use the promise-based API (modern browsers including Mac Chrome)
       const permission = await Notification.requestPermission();
-      return permission === 'granted';
+      
+      console.log('📱 [notificationService] Permission result:', permission);
+      
+      if (permission === 'granted') {
+        console.log('✅ [notificationService] Notification permission granted');
+        return true;
+      } else if (permission === 'denied') {
+        console.warn('❌ [notificationService] Notification permission denied');
+        console.warn('💡 To enable: Browser Settings → Site Settings → Notifications');
+        return false;
+      } else {
+        console.warn('⚠️ [notificationService] Notification permission dismissed');
+        return false;
+      }
     } catch (error) {
-      console.error('Error requesting notification permission:', error);
+      console.error('❌ [notificationService] Error requesting notification permission:', error);
       return false;
     }
   }
@@ -91,6 +122,17 @@ class NotificationService {
     }
 
     try {
+      // Detect Mac Chrome
+      const isMacChrome = navigator.userAgent.includes('Mac') && navigator.userAgent.includes('Chrome');
+      if (isMacChrome) {
+        console.log('🍎 [notificationService] Mac Chrome detected');
+        console.log('💡 [notificationService] If notifications not working:');
+        console.log('   1. System Preferences → Notifications');
+        console.log('   2. Find "Google Chrome" in the list');
+        console.log('   3. Enable notifications for Chrome');
+        console.log('   4. Check "Allow Notifications"');
+      }
+
       // Request permission first
       const hasPermission = await this.requestPermission();
       if (!hasPermission) {
@@ -189,6 +231,39 @@ class NotificationService {
       return response.data.success;
     } catch (error) {
       console.error('Error unregistering device token:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Unregister all device tokens for a user (on logout)
+   */
+  async unregisterUserDeviceTokens(userId: string): Promise<boolean> {
+    try {
+      console.log('🔄 [notificationService] Unregistering tokens for user:', userId);
+      console.log('🔄 [notificationService] API URL:', `${API_BASE_URL}/notifications/tokens/unregister-user`);
+      
+      const response = await api.post(`/notifications/tokens/unregister-user`, {
+        userId,
+      });
+      
+      console.log('✅ [notificationService] User device tokens unregistered:', response.data);
+      
+      // Clear the current token
+      this.currentToken = null;
+      
+      return response.data.success || true; // Return true even if success field is missing
+    } catch (error: any) {
+      console.error('❌ [notificationService] Error unregistering user device tokens:', error);
+      console.error('❌ [notificationService] Error details:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+      });
+      
+      // Clear current token anyway
+      this.currentToken = null;
+      
       return false;
     }
   }

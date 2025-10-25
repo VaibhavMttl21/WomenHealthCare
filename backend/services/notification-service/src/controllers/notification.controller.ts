@@ -80,6 +80,30 @@ export const unregisterToken = async (req: Request, res: Response): Promise<void
   }
 };
 
+export const unregisterUserTokens = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { userId } = req.body;
+
+    console.log('🔄 [Controller] Unregister user tokens request received');
+    console.log('🔄 [Controller] User ID:', userId);
+
+    if (!userId) {
+      console.warn('⚠️ [Controller] Missing userId in request');
+      res.status(400).json({ success: false, message: 'userId is required' });
+      return;
+    }
+
+    console.log('🔄 [Controller] Calling service to unregister tokens...');
+    const result = await notificationService.unregisterUserDeviceTokens(userId);
+
+    console.log('✅ [Controller] Unregister result:', result);
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('❌ [Controller] Error unregistering user tokens:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
 export const getUserNotifications = async (req: Request, res: Response): Promise<void> => {
   try {
     const { userId } = req.params;
